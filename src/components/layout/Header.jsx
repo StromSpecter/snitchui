@@ -1,5 +1,5 @@
 import { Menu, Moon, Search, Star, Sun } from 'lucide-react'
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useTheme } from '../../lib/theme.jsx'
 import { components } from '../../constants/components.js'
@@ -134,7 +134,7 @@ export function Header({ onMenuClick }) {
   return (
     <header className="sticky top-0 z-30 border-b border-border bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-4 px-6">
-        <Link to="/" className="text-lg font-bold tracking-tight">
+        <Link to="/" className="text-lg font-bold tracking-tight hidden md:block">
           snitchui
         </Link>
 
@@ -143,16 +143,16 @@ export function Header({ onMenuClick }) {
           <DesktopSearch />
         </div>
 
-        {/* Mobile: search icon button */}
-        <button
-          className="lg:hidden text-muted-foreground hover:text-foreground transition-colors"
-          onClick={() => setSearchOpen(true)}
-          aria-label="Search components"
-        >
-          <Search className="size-5" />
-        </button>
-
         <div className="flex items-center gap-3">
+          {/* Mobile: search icon */}
+          <button
+            className="lg:hidden text-muted-foreground hover:text-foreground transition-colors"
+            onClick={() => setSearchOpen(true)}
+            aria-label="Search components"
+          >
+            <Search className="size-5" />
+          </button>
+
           <StarCount />
 
           <button
