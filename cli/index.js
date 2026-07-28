@@ -134,13 +134,13 @@ const skipInstall = args.includes('--skip-install')
 if (command === 'add' && compName) {
   add(compName, { force, skipInstall })
 } else {
-  log(`\n${CYAN}uitemplate CLI${RESET}`)
+  log(`\n${CYAN}veloraui CLI${RESET}`)
   log(`\nUsage:`)
-  log(`  npx uitemplate add <component> [options]`)
+  log(`  npx veloraui add <component> [options]`)
   log(`\nOptions:`)
   log(`  --force         Overwrite existing files`)
   log(`  --skip-install  Skip npm install`)
   log(`\nExamples:`)
-  log(`  npx uitemplate add button`)
-  log(`  npx uitemplate add button --force`)
+  log(`  npx veloraui add button`)
+  log(`  npx veloraui add button --force`)
 }

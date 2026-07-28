@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "bin": {
-    "uitemplate": "./bin/uitemplate.js"
+    "veloraui": "./bin/uitemplate.js"
   },
   "scripts": {
     "dev": "vite",
