@@ -1,7 +1,8 @@
-import { Menu, Moon, Star, Sun } from 'lucide-react'
-import { Link } from 'react-router-dom'
-import { useTheme } from '../../lib/theme.jsx'
+import { Menu, Moon, Search, Star, Sun } from 'lucide-react'
 import { useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { useTheme } from '../../lib/theme.jsx'
+import { components } from '../../constants/components.js'
 
 function StarCount() {
   const [stars, setStars] = useState(null)
@@ -23,33 +24,92 @@ function StarCount() {
   )
 }
 
-const navLinks = [
-  { to: '/', label: 'Home' },
-  { to: '/docs/installation', label: 'Install' },
-  { to: '/docs/button', label: 'Button' },
-]
+function ComponentSearch() {
+  const [query, setQuery] = useState('')
+  const [open, setOpen] = useState(false)
+  const navigate = useNavigate()
+  const available = components.filter((c) => !c.comingSoon)
+
+  const results = query
+    ? available.filter((c) =>
+        c.name.toLowerCase().includes(query.toLowerCase())
+      )
+    : []
+
+  const handleSelect = (id) => {
+    navigate(`/docs/${id}`)
+    setQuery('')
+    setOpen(false)
+  }
+
+  return (
+    <div className="relative">
+      <div className="relative">
+        <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+        <input
+          type="text"
+          placeholder="Search components..."
+          value={query}
+          onChange={(e) => {
+            setQuery(e.target.value)
+            setOpen(true)
+          }}
+          onFocus={() => setOpen(true)}
+          className="h-9 w-40 rounded-md border border-border bg-background pl-8 pr-3 text-sm outline-none transition-colors focus:w-64 focus:border-ring focus:ring-1 focus:ring-ring sm:w-48 lg:w-56"
+          aria-label="Search components"
+        />
+        {query && (
+          <button
+            onClick={() => {
+              setQuery('')
+              setOpen(false)
+            }}
+            className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            aria-label="Clear search"
+          >
+            ✕
+          </button>
+        )}
+      </div>
+
+      {open && results.length > 0 && (
+        <div className="absolute top-full left-0 right-0 mt-1 z-50 rounded-lg border border-border bg-background shadow-lg">
+          <ul className="py-1">
+            {results.map((c) => (
+              <li key={c.id}>
+                <button
+                  onClick={() => handleSelect(c.id)}
+                  className="flex w-full items-center gap-2 px-4 py-2 text-sm text-left hover:bg-accent hover:text-accent-foreground transition-colors"
+                >
+                  <Search className="size-3.5 text-muted-foreground" />
+                  {c.name}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {open && query && results.length === 0 && (
+        <div className="absolute top-full left-0 right-0 mt-1 z-50 rounded-lg border border-border bg-background px-4 py-2 text-sm text-muted-foreground shadow-lg">
+          No results found
+        </div>
+      )}
+    </div>
+  )
+}
 
 export function Header({ onMenuClick }) {
   const { theme, toggle } = useTheme()
 
   return (
     <header className="sticky top-0 z-30 border-b border-border bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
-      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-6">
+      <div className="mx-auto flex h-14 max-w-7xl items-center gap-4 px-6">
         <Link to="/" className="text-lg font-bold tracking-tight">
           snitchui
         </Link>
 
-        <nav className="hidden items-center gap-6 md:flex">
-          {navLinks.map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
-              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
+        <ComponentSearch />
 
         <div className="flex items-center gap-3">
           <StarCount />
