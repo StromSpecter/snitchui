@@ -61,7 +61,7 @@ export default defineConfig({
   {
     title: 'Install a component',
     desc: 'Run the CLI to automatically install dependencies and create component files.',
-    code: 'npx veloraui@latest add button',
+    code: 'npx stitchui@latest add button',
   },
   {
     title: 'Use the component',
@@ -96,7 +96,7 @@ export function Installation() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight">Installation</h1>
         <p className="mt-2 text-muted-foreground">
-          How to install and use veloraui components in your project.
+          How to install and use stitchui components in your project.
         </p>
       </div>
 

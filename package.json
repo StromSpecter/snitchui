@@ -1,10 +1,10 @@
 {
-  "name": "veloraui",
+  "name": "stitchui",
 
   "version": "0.0.0",
   "type": "module",
   "bin": {
-    "veloraui": "./bin/uitemplate.js"
+    "stitchui": "./bin/uitemplate.js"
   },
   "scripts": {
     "dev": "vite",

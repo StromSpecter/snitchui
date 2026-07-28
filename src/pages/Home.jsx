@@ -9,7 +9,7 @@ export function Home() {
     <div className="mx-auto max-w-4xl px-6 py-16">
       <div className="mb-12 text-center">
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-          veloraui
+          stitchui
         </h1>
         <p className="mt-4 text-lg text-muted-foreground max-w-xl mx-auto">
           A growing collection of copy-paste UI components built with

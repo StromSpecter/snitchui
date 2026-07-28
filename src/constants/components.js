@@ -60,7 +60,7 @@ export const components = [
     path: '/docs/button',
     description: 'A clickable UI element that triggers an action or event.',
     demo: 'Button',
-    installCmd: 'npx veloraui@latest add button',
+    installCmd: 'npx stitchui@latest add button',
     deps: [
       { name: 'Button', file: 'components/ui/button.jsx', source: 'BUTTON_SOURCE' },
       { name: 'utils', file: 'lib/utils.js', source: 'UTILS_SOURCE' },

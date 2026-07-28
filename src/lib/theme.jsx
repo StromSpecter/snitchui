@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useState } from 'react'
 
 const ThemeContext = createContext()
 
-const STORAGE_KEY = 'veloraui-theme'
+const STORAGE_KEY = 'stitchui-theme'
 
 function getInitialTheme() {
   if (typeof window === 'undefined') return 'dark'
