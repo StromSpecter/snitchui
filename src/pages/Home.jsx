@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
 import { components } from '../constants/components.js'
-import { cn } from '../lib/utils.js'
 
 const features = [
   { label: 'React 19', desc: 'Built with latest React' },
@@ -68,29 +67,6 @@ function Hero() {
   )
 }
 
-function StatsRow() {
-  const stats = [
-    { value: '1', label: 'Component' },
-    { value: '100%', label: 'Open Source' },
-    { value: '0', label: 'Dependencies' },
-    { value: 'Light + Dark', label: 'Themes' },
-  ]
-
-  return (
-    <section className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-      {stats.map((s) => (
-        <div
-          key={s.label}
-          className="rounded-lg border border-border p-4 text-center"
-        >
-          <div className="text-2xl font-bold tracking-tight">{s.value}</div>
-          <div className="mt-1 text-xs text-muted-foreground">{s.label}</div>
-        </div>
-      ))}
-    </section>
-  )
-}
-
 export function Home() {
   const available = components.filter((c) => !c.comingSoon)
   const planned = components.filter((c) => c.comingSoon)
@@ -98,46 +74,6 @@ export function Home() {
   return (
     <div className="mx-auto max-w-5xl px-6 py-10">
       <Hero />
-
-      <section className="mt-16">
-        <StatsRow />
-      </section>
-
-      <section className="mt-16">
-        <h2 className="mb-2 text-2xl font-bold tracking-tight">
-          Quick Preview
-        </h2>
-        <p className="mb-6 text-sm text-muted-foreground">
-          Button component with all variants and sizes.
-        </p>
-        <div className="rounded-xl border border-border bg-muted/20 p-8">
-          <div className="flex flex-wrap gap-3">
-            <span className="inline-flex h-9 items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm">
-              Default
-            </span>
-            <span className="inline-flex h-9 items-center rounded-md bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground shadow-sm">
-              Secondary
-            </span>
-            <span className="inline-flex h-9 items-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium shadow-sm">
-              Outline
-            </span>
-            <span className="inline-flex h-9 items-center rounded-md px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground">
-              Ghost
-            </span>
-            <span className="inline-flex h-9 items-center rounded-md bg-destructive px-4 py-2 text-sm font-medium text-destructive-foreground shadow-sm">
-              Destructive
-            </span>
-          </div>
-        </div>
-        <div className="mt-4 flex justify-end">
-          <Link
-            to="/docs/button"
-            className="text-sm font-medium text-primary underline-offset-4 hover:underline"
-          >
-            View all button options →
-          </Link>
-        </div>
-      </section>
 
       <section className="mt-16">
         <h2 className="mb-6 text-2xl font-bold tracking-tight">
