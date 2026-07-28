@@ -1,51 +1,164 @@
 import { Link } from 'react-router-dom'
 import { components } from '../constants/components.js'
+import { cn } from '../lib/utils.js'
+
+const features = [
+  { label: 'React 19', desc: 'Built with latest React' },
+  { label: 'Tailwind CSS v4', desc: 'Utility-first styling' },
+  { label: 'Dark Mode', desc: 'Auto light & dark' },
+  { label: 'Accessible', desc: 'Keyboard & ARIA' },
+  { label: 'Responsive', desc: 'Mobile first' },
+  { label: 'Tree-shakable', desc: 'Import only what you use' },
+]
+
+function Hero() {
+  return (
+    <section className="relative overflow-hidden rounded-2xl border border-border bg-gradient-to-b from-background to-muted/30 px-6 py-16 sm:py-24">
+      {/* Decorative blur */}
+      <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/5 blur-3xl" />
+
+      <div className="relative mx-auto max-w-3xl text-center">
+        <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl">
+          snitchui
+        </h1>
+        <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+          A modern UI component library inspired by shadcn/ui.
+          Copy-paste ready components built with React &amp; Tailwind CSS.
+          Open source, free to use, and easy to customize.
+        </p>
+
+        <div className="mt-10 flex flex-wrap justify-center gap-3">
+          <Link
+            to="/docs/installation"
+            className="inline-flex h-11 items-center gap-2 rounded-md bg-primary px-6 text-sm font-medium text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors"
+          >
+            Get Started
+            <svg
+              className="size-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+            >
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </Link>
+          <Link
+            to="/docs/button"
+            className="inline-flex h-11 items-center gap-2 rounded-md border border-input bg-background px-6 text-sm font-medium shadow-sm hover:bg-accent hover:text-accent-foreground transition-colors"
+          >
+            Browse Components
+          </Link>
+        </div>
+
+        {/* Feature badges */}
+        <div className="mt-12 flex flex-wrap justify-center gap-2">
+          {features.map((f) => (
+            <span
+              key={f.label}
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background/60 px-3 py-1.5 text-xs font-medium text-muted-foreground backdrop-blur-sm"
+            >
+              <span className="size-1.5 rounded-full bg-primary" />
+              {f.label}
+            </span>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function StatsRow() {
+  const stats = [
+    { value: '1', label: 'Component' },
+    { value: '100%', label: 'Open Source' },
+    { value: '0', label: 'Dependencies' },
+    { value: 'Light + Dark', label: 'Themes' },
+  ]
+
+  return (
+    <section className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+      {stats.map((s) => (
+        <div
+          key={s.label}
+          className="rounded-lg border border-border p-4 text-center"
+        >
+          <div className="text-2xl font-bold tracking-tight">{s.value}</div>
+          <div className="mt-1 text-xs text-muted-foreground">{s.label}</div>
+        </div>
+      ))}
+    </section>
+  )
+}
 
 export function Home() {
   const available = components.filter((c) => !c.comingSoon)
   const planned = components.filter((c) => c.comingSoon)
 
   return (
-    <div className="mx-auto max-w-4xl px-6 py-16">
-      <div className="mb-12 text-center">
-        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-          snitchui
-        </h1>
-        <p className="mt-4 text-lg text-muted-foreground max-w-xl mx-auto">
-          A growing collection of copy-paste UI components built with
-          React & Tailwind CSS.
+    <div className="mx-auto max-w-5xl px-6 py-10">
+      <Hero />
+
+      <section className="mt-16">
+        <StatsRow />
+      </section>
+
+      <section className="mt-16">
+        <h2 className="mb-2 text-2xl font-bold tracking-tight">
+          Quick Preview
+        </h2>
+        <p className="mb-6 text-sm text-muted-foreground">
+          Button component with all variants and sizes.
         </p>
-        <div className="mt-8 flex justify-center gap-4">
-          <Link
-            to="/docs/installation"
-            className="inline-flex items-center justify-center h-10 px-6 rounded-md bg-primary text-primary-foreground text-sm font-medium shadow-sm hover:bg-primary/90 transition-colors"
-          >
-            Get Started
-          </Link>
+        <div className="rounded-xl border border-border bg-muted/20 p-8">
+          <div className="flex flex-wrap gap-3">
+            <span className="inline-flex h-9 items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm">
+              Default
+            </span>
+            <span className="inline-flex h-9 items-center rounded-md bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground shadow-sm">
+              Secondary
+            </span>
+            <span className="inline-flex h-9 items-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium shadow-sm">
+              Outline
+            </span>
+            <span className="inline-flex h-9 items-center rounded-md px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground">
+              Ghost
+            </span>
+            <span className="inline-flex h-9 items-center rounded-md bg-destructive px-4 py-2 text-sm font-medium text-destructive-foreground shadow-sm">
+              Destructive
+            </span>
+          </div>
+        </div>
+        <div className="mt-4 flex justify-end">
           <Link
             to="/docs/button"
-            className="inline-flex items-center justify-center h-10 px-6 rounded-md border border-input bg-background text-sm font-medium shadow-sm hover:bg-accent hover:text-accent-foreground transition-colors"
+            className="text-sm font-medium text-primary underline-offset-4 hover:underline"
           >
-            Browse Components
+            View all button options →
           </Link>
         </div>
-      </div>
+      </section>
 
-      <section className="mb-12">
-        <h2 className="mb-6 text-2xl font-semibold tracking-tight">
+      <section className="mt-16">
+        <h2 className="mb-6 text-2xl font-bold tracking-tight">
           Available Components
         </h2>
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {available.map((c) => (
             <Link
               key={c.id}
               to={c.path}
-              className="group rounded-lg border border-border p-5 hover:border-ring transition-colors"
+              className="group rounded-xl border border-border p-5 hover:border-ring hover:shadow-sm transition-all"
             >
-              <h3 className="font-medium group-hover:text-foreground transition-colors">
-                {c.name}
-              </h3>
-              <p className="mt-1 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2">
+                <span className="flex size-8 items-center justify-center rounded-md bg-primary/10 text-primary text-xs font-bold">
+                  {c.name.charAt(0)}
+                </span>
+                <h3 className="font-semibold group-hover:text-primary transition-colors">
+                  {c.name}
+                </h3>
+              </div>
+              <p className="mt-2 text-sm text-muted-leading-relaxed">
                 {c.description}
               </p>
             </Link>
@@ -54,25 +167,59 @@ export function Home() {
       </section>
 
       {planned.length > 0 && (
-        <section>
-          <h2 className="mb-6 text-2xl font-semibold tracking-tight">
+        <section className="mt-16">
+          <h2 className="mb-6 text-2xl font-bold tracking-tight">
             Coming Soon
           </h2>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {planned.map((c) => (
               <div
                 key={c.id}
-                className="rounded-lg border border-border p-5 opacity-50"
+                className="rounded-xl border border-border p-5 opacity-60"
               >
-                <h3 className="font-medium">{c.name}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <span className="flex size-8 items-center justify-center rounded-md bg-muted text-muted-foreground text-xs font-bold">
+                    {c.name.charAt(0)}
+                  </span>
+                  <h3 className="font-semibold">{c.name}</h3>
+                </div>
+                <p className="mt-2 text-sm text-muted-foreground">
                   {c.description}
                 </p>
+                <span className="mt-3 inline-block text-xs font-medium text-muted-foreground border border-border rounded-full px-3 py-0.5">
+                  Soon
+                </span>
               </div>
             ))}
           </div>
         </section>
       )}
+
+      <section className="mt-16 mb-8">
+        <div className="rounded-2xl border border-border bg-gradient-to-br from-primary/5 to-accent/5 p-8 text-center">
+          <h2 className="text-2xl font-bold tracking-tight">
+            Ready to get started?
+          </h2>
+          <p className="mt-2 text-muted-foreground max-w-md mx-auto">
+            Install snitchui via CLI and start building beautiful interfaces
+            in seconds.
+          </p>
+          <div className="mt-6 flex justify-center gap-3">
+            <Link
+              to="/docs/installation"
+              className="inline-flex h-11 items-center gap-2 rounded-md bg-primary px-6 text-sm font-medium text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors"
+            >
+              Install snitchui
+            </Link>
+            <Link
+              to="/docs/button"
+              className="inline-flex h-11 items-center gap-2 rounded-md border border-input bg-background px-6 text-sm font-medium shadow-sm hover:bg-accent hover:text-accent-foreground transition-colors"
+            >
+              Documentation
+            </Link>
+          </div>
+        </div>
+      </section>
     </div>
   )
 }
