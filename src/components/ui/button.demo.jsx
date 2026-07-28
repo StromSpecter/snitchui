@@ -1,4 +1,4 @@
-import { Button } from './Button.jsx'
+import { Button } from './button.jsx'
 import { Loader2, Mail, Plus } from 'lucide-react'
 
 export function ButtonDemo() {
