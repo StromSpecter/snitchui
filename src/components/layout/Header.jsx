@@ -134,7 +134,7 @@ export function Header({ onMenuClick }) {
   return (
     <header className="sticky top-0 z-30 border-b border-border bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-4 px-6">
-        <Link to="/" className="text-lg font-bold tracking-tight hidden md:block">
+        <Link to="/" className="text-lg font-bold tracking-tight block md:hidden">
           snitchui
         </Link>
 
@@ -153,8 +153,6 @@ export function Header({ onMenuClick }) {
             <Search className="size-5" />
           </button>
 
-          <StarCount />
-
           <button
             onClick={toggle}
             className="text-muted-foreground hover:text-foreground transition-colors"
@@ -167,9 +165,11 @@ export function Header({ onMenuClick }) {
             href="https://github.com/StromSpecter/snitchui"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-muted-foreground hover:text-foreground transition-colors"
+            className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
             aria-label="GitHub"
           >
+          <StarCount />
+
             <svg
               className="size-5"
               viewBox="0 0 24 24"
