@@ -34,7 +34,7 @@ function MobileSearchModal({ open, onClose }) {
     if (open) {
       inputRef.current?.focus()
     } else {
-      setQuery('')
+      setTimeout(() => setQuery(''), 0)
     }
   }, [open])
 
