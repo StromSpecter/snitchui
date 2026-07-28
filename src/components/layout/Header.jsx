@@ -1,5 +1,26 @@
-import { Menu, Moon, Sun } from 'lucide-react'
+import { Menu, Moon, Star, Sun } from 'lucide-react'
 import { useTheme } from '../../lib/theme.jsx'
+import { useState, useEffect } from 'react'
+
+function StarCount() {
+  const [stars, setStars] = useState(null)
+
+  useEffect(() => {
+    fetch('https://api.github.com/repos/StromSpecter/snitchui')
+      .then((r) => r.json())
+      .then((data) => setStars(data.stargazers_count))
+      .catch(() => {})
+  }, [])
+
+  if (stars === null) return null
+
+  return (
+    <span className="flex items-center gap-1 text-xs text-muted-foreground">
+      <Star className="size-3.5 fill-yellow-400 text-yellow-400" />
+      {stars.toLocaleString()}
+    </span>
+  )
+}
 
 export function Header({ onMenuClick }) {
   const { theme, toggle } = useTheme()
@@ -23,6 +44,8 @@ export function Header({ onMenuClick }) {
       >
         {theme === 'dark' ? <Sun className="size-5" /> : <Moon className="size-5" />}
       </button>
+
+      <StarCount />
 
       <a
         href="https://github.com/StromSpecter/snitchui"
