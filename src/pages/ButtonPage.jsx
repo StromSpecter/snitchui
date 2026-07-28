@@ -1,4 +1,4 @@
-import { ButtonDemo } from '../components/ui/button.demo.jsx'
+import { ButtonDemo } from '../components/ui/button/button.demo.jsx'
 import { CodeBlock } from '../components/ui/CodeBlock.jsx'
 import { CopyButton } from '../components/ui/CopyButton.jsx'
 import { components, resolveDeps } from '../constants/components.js'

@@ -9,7 +9,7 @@ export const components = {
     ],
     files: [
       {
-        path: 'components/ui/button.jsx',
+        path: 'components/ui/button/button.jsx',
         content: `import { forwardRef } from 'react'
 import { Slot } from '@radix-ui/react-slot'
 import { cva } from 'class-variance-authority'

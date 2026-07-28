@@ -62,7 +62,7 @@ export const components = [
     demo: 'Button',
     installCmd: 'npx snitchui@latest add button',
     deps: [
-      { name: 'Button', file: 'components/ui/button.jsx', source: 'BUTTON_SOURCE' },
+      { name: 'Button', file: 'components/ui/button/button.jsx', source: 'BUTTON_SOURCE' },
       { name: 'utils', file: 'lib/utils.js', source: 'UTILS_SOURCE' },
     ],
     props: [
