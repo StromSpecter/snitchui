@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import { Sidebar } from './Sidebar.jsx'
 import { Header } from './Header.jsx'
+import { SiteFooter } from './Footer.jsx'
 
 export function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -17,9 +18,7 @@ export function Layout() {
           <Outlet />
         </main>
 
-        <footer className="border-t border-border py-6 text-center text-sm text-muted-foreground">
-          <p>Built with React + Tailwind CSS. Inspired by shadcn/ui.</p>
-        </footer>
+        <SiteFooter />
       </div>
     </div>
   )
