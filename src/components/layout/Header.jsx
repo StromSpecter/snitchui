@@ -135,7 +135,7 @@ export function Header({ onMenuClick }) {
     <header className="sticky top-0 z-30 border-b border-border bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-4 px-6">
         <Link to="/" className="text-lg font-bold tracking-tight block md:hidden">
-          snitchui
+          SnitchUI
         </Link>
 
         {/* Desktop: inline search */}

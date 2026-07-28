@@ -21,7 +21,7 @@ export function Sidebar({ open, onClose }) {
       >
         <div className="flex h-14 items-center border-b border-border px-6">
           <NavLink to="/" className="text-lg font-semibold tracking-tight">
-            snitchui
+            SnitchUI
           </NavLink>
           <button
             className="ml-auto lg:hidden"

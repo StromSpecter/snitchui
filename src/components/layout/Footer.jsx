@@ -23,7 +23,7 @@ export function SiteFooter() {
           {/* Brand */}
           <div className="lg:col-span-1">
             <NavLink to="/" className="text-lg font-bold tracking-tight">
-              snitchui
+              SnitchUI
             </NavLink>
             <p className="mt-3 text-sm text-muted-foreground">
               Copy-paste UI components built with React & Tailwind CSS. Inspired by shadcn/ui.
@@ -66,7 +66,7 @@ export function SiteFooter() {
         {/* Bottom */}
         <div className="mt-12 flex items-center justify-between border-t border-border pt-8">
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} snitchui.
+            © {new Date().getFullYear()} SnitchUI.
           </p>
           <a
             href="https://github.com/StromSpecter/snitchui"

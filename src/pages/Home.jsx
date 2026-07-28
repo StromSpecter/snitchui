@@ -18,7 +18,7 @@ function Hero() {
 
       <div className="relative mx-auto max-w-3xl text-center">
         <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl">
-          snitchui
+          SnitchUI
         </h1>
         <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
           A modern UI component library inspired by shadcn/ui.
