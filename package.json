@@ -1,10 +1,10 @@
 {
-  "name": "stitchui",
+  "name": "snitchui",
 
   "version": "0.0.0",
   "type": "module",
   "bin": {
-    "stitchui": "./bin/uitemplate.js"
+    "snitchui": "./bin/uitemplate.js"
   },
   "scripts": {
     "dev": "vite",

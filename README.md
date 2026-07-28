@@ -1,4 +1,4 @@
-# stitchui
+# snitchui
 
 A modern React UI Component Library inspired by shadcn/ui.
 

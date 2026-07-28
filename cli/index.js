@@ -134,13 +134,13 @@ const skipInstall = args.includes('--skip-install')
 if (command === 'add' && compName) {
   add(compName, { force, skipInstall })
 } else {
-  log(`\n${CYAN}stitchui CLI${RESET}`)
+  log(`\n${CYAN}snitchui CLI${RESET}`)
   log(`\nUsage:`)
-  log(`  npx stitchui add <component> [options]`)
+  log(`  npx snitchui add <component> [options]`)
   log(`\nOptions:`)
   log(`  --force         Overwrite existing files`)
   log(`  --skip-install  Skip npm install`)
   log(`\nExamples:`)
-  log(`  npx stitchui add button`)
-  log(`  npx stitchui add button --force`)
+  log(`  npx snitchui add button`)
+  log(`  npx snitchui add button --force`)
 }
