@@ -1,9 +1,15 @@
 import { useParams } from 'react-router-dom'
 import { components } from '../constants/components.js'
 import { ButtonPage } from './ButtonPage.jsx'
+import { LabelPage } from './LabelPage.jsx'
+import { InputPage } from './InputPage.jsx'
+import { SelectPage } from './SelectPage.jsx'
 
 const pageMap = {
   button: ButtonPage,
+  label: LabelPage,
+  input: InputPage,
+  select: SelectPage,
 }
 
 export function ComponentPage() {
