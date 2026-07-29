@@ -59,7 +59,12 @@ export default defineConfig({
 }`,
   },
   {
-    title: 'Install a component',
+    title: 'Install SnitchUI',
+    desc: 'Install the core package as a dependency.',
+    code: 'npm install snitchui',
+  },
+  {
+    title: 'Scaffold a component',
     desc: 'Run the CLI to automatically install dependencies and create component files.',
     code: 'npx snitchui@latest add button',
   },
