@@ -42,22 +42,18 @@ export function ComboboxPage() {
       <section className="mb-12">
         <h2 className="mb-4 text-xl font-semibold tracking-tight">Usage</h2>
         <CodeBlock
-          code={`import {
-  Combobox,
-  ComboboxTrigger,
-  ComboboxContent,
-  ComboboxItem,
-} from '@/components/ui/combobox'
+          code={`import { Combobox, ComboboxItem } from '@/components/ui/combobox'
+import { useState } from 'react'
 
 export function Example() {
+  const [selected, setSelected] = useState([])
+  const frameworks = ['React', 'Vue', 'Svelte', 'Angular']
+
   return (
-    <Combobox>
-      <ComboboxTrigger placeholder="Select framework" />
-      <ComboboxContent>
-        <ComboboxItem value="react">React</ComboboxItem>
-        <ComboboxItem value="vue">Vue</ComboboxItem>
-        <ComboboxItem value="svelte">Svelte</ComboboxItem>
-      </ComboboxContent>
+    <Combobox value={selected} onChange={setSelected}>
+      {frameworks.map((fw) => (
+        <ComboboxItem key={fw} value={fw}>{fw}</ComboboxItem>
+      ))}
     </Combobox>
   )
 }`}

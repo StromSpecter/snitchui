@@ -1,10 +1,1 @@
-export {
-  Combobox,
-  ComboboxGroup,
-  ComboboxValue,
-  ComboboxTrigger,
-  ComboboxContent,
-  ComboboxItem,
-  ComboboxLabel,
-  ComboboxSeparator,
-} from './combobox.jsx'
+export { Combobox, ComboboxItem } from './combobox.jsx'

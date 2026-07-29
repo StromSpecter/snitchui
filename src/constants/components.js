@@ -250,91 +250,182 @@ Checkbox.displayName = 'Checkbox'
 
 export { Checkbox }`
 
-export const COMBOBOX_SOURCE = `import * as SelectPrimitive from '@radix-ui/react-select'
-import { forwardRef } from 'react'
+export const COMBOBOX_SOURCE = `import { forwardRef } from 'react'
 import { cn } from '../../lib/utils'
+import { useState } from 'react'
 
-const Combobox = SelectPrimitive.Root
-const ComboboxTrigger = forwardRef(
-  ({ className, children, ...props }, ref) => {
+const Combobox = forwardRef(
+  ({
+    className,
+    children,
+    value = [],
+    onChange,
+    placeholder = 'Select...',
+    searchPlaceholder = 'Search...',
+    emptyMessage = 'No results found.',
+    ...props
+  }, ref) => {
+    const [open, setOpen] = useState(false)
+    const [search, setSearch] = useState('')
+    const selectedValues = Array.isArray(value) ? value : [value]
+
+    const filteredChildren = children
+      ? children.filter((child) => {
+          const label = child.props.label || child.props.children || ''
+          return String(label).toLowerCase().includes(search.toLowerCase())
+        })
+      : []
+
+    const handleToggle = (val) => {
+      const next = selectedValues.includes(val)
+        ? selectedValues.filter((v) => v !== val)
+        : [...selectedValues, val]
+      if (onChange) onChange(next)
+    }
+
     return (
-      <SelectPrimitive.Trigger
+      <div className={cn('relative', className)} ref={ref} {...props}>
+        <div
+          className={cn(
+            'flex min-h-[40px] flex-wrap items-center gap-1 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus-within:outline-none focus-within:ring-1 focus-within:ring-ring cursor-pointer',
+            !selectedValues.length && 'text-muted-foreground'
+          )}
+          onClick={() => setOpen(!open)}
+        >
+          {selectedValues.length === 0 ? (
+            <span className="text-muted-foreground">{placeholder}</span>
+          ) : (
+            selectedValues.map((val) => (
+              <span
+                key={val}
+                className="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary px-2 py-0.5 text-xs font-medium"
+              >
+                {val}
+                <button
+                  type="button"
+                  className="ml-0.5 rounded-full hover:bg-primary/20 px-0.5"
+                  onMouseDown={(e) => {
+                    e.stopPropagation()
+                    handleToggle(val)
+                  }}
+                >
+                  ✕
+                </button>
+              </span>
+            ))
+          )}
+          <div className="flex-1" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={cn(
+              'opacity-50 transition-transform',
+              open && 'rotate-180'
+            )}
+          >
+            <path d="m6 9 6 6 6-6" />
+          </svg>
+        </div>
+
+        {open && (
+          <div className="absolute z-10 mt-1 w-full rounded-md border border-border bg-background shadow-md">
+            <div className="p-2">
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder={searchPlaceholder}
+                className="w-full rounded-md border border-input bg-transparent px-3 py-1.5 text-sm outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                autoFocus
+              />
+            </div>
+            <div className="max-h-[200px] overflow-y-auto">
+              {filteredChildren.length === 0 ? (
+                <div className="px-3 py-2 text-sm text-muted-foreground text-center">
+                  {emptyMessage}
+                </div>
+              ) : (
+                filteredChildren.map((child, i) => {
+                  const val = child.props.value ?? child.props.children
+                  return (
+                    <button
+                      key={i}
+                      type="button"
+                      className={cn(
+                        'flex w-full items-center gap-2 rounded-sm px-3 py-2 text-sm text-left cursor-pointer hover:bg-accent hover:text-accent-foreground',
+                        selectedValues.includes(val) && 'bg-accent text-accent-foreground'
+                      )}
+                      onMouseDown={(e) => {
+                        e.preventDefault()
+                        handleToggle(val)
+                      }}
+                    >
+                      <span
+                        className={cn(
+                          'flex h-4 w-4 items-center justify-center rounded-sm border',
+                          selectedValues.includes(val)
+                            ? 'bg-primary border-primary text-primary-foreground'
+                            : 'border-input'
+                        )}
+                      >
+                        {selectedValues.includes(val) && (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="12"
+                            height="12"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="3"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M20 6 9 17l-5-5" />
+                          </svg>
+                        )}
+                      </span>
+                      {child.props.label || child.props.children}
+                    </button>
+                  )
+                })
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    )
+  }
+)
+Combobox.displayName = 'Combobox'
+
+const ComboboxItem = forwardRef(
+  ({ className, children, value, ...props }, ref) => {
+    return (
+      <button
+        type="button"
         className={cn(
-          'flex h-9 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
+          'relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none',
           className
         )}
         ref={ref}
+        value={value}
         {...props}
       >
         {children}
-        <SelectPrimitive.Icon asChild>
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-50">
-            <path d="m6 9 6 6 6-6" />
-          </svg>
-        </SelectPrimitive.Icon>
-      </SelectPrimitive.Trigger>
-    )
-  }
-)
-ComboboxTrigger.displayName = 'ComboboxTrigger'
-
-const ComboboxContent = forwardRef(
-  ({ className, children, position = 'popper', ...props }, ref) => {
-    return (
-      <SelectPrimitive.Portal>
-        <SelectPrimitive.Content
-          className={cn(
-            'relative z-50 min-w-[8rem] overflow-hidden rounded-md border border-border bg-background text-foreground shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2',
-            position === 'popper' &&
-              'data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1',
-            className
-          )}
-          position={position}
-          ref={ref}
-          {...props}
-        >
-          <SelectPrimitive.Viewport
-            className={cn(
-              'p-1',
-              position === 'popper' &&
-                'h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]'
-            )}
-          >
-            {children}
-          </SelectPrimitive.Viewport>
-        </SelectPrimitive.Content>
-      </SelectPrimitive.Portal>
-    )
-  }
-)
-ComboboxContent.displayName = 'ComboboxContent'
-
-const ComboboxItem = forwardRef(
-  ({ className, children, ...props }, ref) => {
-    return (
-      <SelectPrimitive.Item
-        className={cn(
-          'relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
-          className
-        )}
-        ref={ref}
-        {...props}
-      >
-        <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
-          <SelectPrimitive.ItemIndicator>
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M20 6 9 17l-5-5" />
-            </svg>
-          </SelectPrimitive.ItemIndicator>
-        </span>
-        <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
-      </SelectPrimitive.Item>
+      </button>
     )
   }
 )
 ComboboxItem.displayName = 'ComboboxItem'
 
-export { Combobox, ComboboxTrigger, ComboboxContent, ComboboxItem }`
+export { Combobox, ComboboxItem }`
 
 export const DATEPICKER_SOURCE = `import { forwardRef } from 'react'
 import { cn } from '../../lib/utils'
@@ -658,19 +749,19 @@ export const components = [
     id: 'combobox',
     name: 'Combobox',
     path: '/docs/combobox',
-    description: 'A combobox/dropdown for selecting from a list of options.',
+    description: 'A searchable multi-select dropdown with chip input and filter.',
     demo: 'ComboboxDemo',
     installCmd: 'npx snitchui@latest add combobox',
     deps: [
       { name: 'Combobox', file: 'components/ui/combobox/combobox.jsx', source: 'COMBOBOX_SOURCE' },
-      { name: '@radix-ui/react-select', file: 'node_modules/@radix-ui/react-select', source: null },
       { name: 'utils', file: 'lib/utils.js', source: 'UTILS_SOURCE' },
     ],
     props: [
-      { prop: 'value', type: 'string', default: '-', description: 'The controlled selected value' },
-      { prop: 'onValueChange', type: '(value: string) => void', default: '-', description: 'Callback when the selected value changes' },
-      { prop: 'disabled', type: 'boolean', default: 'false', description: 'Disables the combobox' },
-      { prop: 'placeholder', type: 'string', default: '-', description: 'Placeholder text shown when no value is selected' },
+      { prop: 'value', type: 'string[]', default: '[]', description: 'Array of selected values' },
+      { prop: 'onChange', type: '(value: string[]) => void', default: '-', description: 'Callback when selection changes' },
+      { prop: 'placeholder', type: 'string', default: '"Select..."', description: 'Placeholder when nothing is selected' },
+      { prop: 'searchPlaceholder', type: 'string', default: '"Search..."', description: 'Placeholder for search input' },
+      { prop: 'emptyMessage', type: 'string', default: '"No results found."', description: 'Message when no options match' },
     ],
   },
   {
