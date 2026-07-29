@@ -41,8 +41,26 @@ SnitchUI provides copy-paste, reusable UI components for React + Tailwind CSS pr
 
 ## Installation
 
+Install the package:
+
 ```bash
 npm install snitchui
+```
+
+Then scaffold any component with the CLI:
+
+```bash
+npx snitchui add button
+npx snitchui add label
+npx snitchui add input
+npx snitchui add select
+npx snitchui add checkbox
+npx snitchui add combobox
+npx snitchui add datepicker
+npx snitchui add radiobutton
+npx snitchui add switch
+npx snitchui add textarea
+npx snitchui add timepicker
 ```
 
 ## Usage
@@ -82,25 +100,8 @@ export function App() {
 }
 ```
 
-## CLI
+### CLI Options
 
-Scaffold a component into your project:
-
-```bash
-npx snitchui add button
-npx snitchui add label
-npx snitchui add input
-npx snitchui add select
-npx snitchui add checkbox
-npx snitchui add combobox
-npx snitchui add datepicker
-npx snitchui add radiobutton
-npx snitchui add switch
-npx snitchui add textarea
-npx snitchui add timepicker
-```
-
-Options:
 - `--force` — overwrite existing files
 - `--skip-install` — skip npm install of dependencies
 

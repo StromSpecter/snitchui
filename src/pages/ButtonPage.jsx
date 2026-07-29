@@ -28,7 +28,7 @@ export function ButtonPage() {
           Installation
         </h2>
         <p className="mb-4 text-sm text-muted-foreground">
-          Run the CLI from your project root. It installs dependencies and creates the component file automatically.
+          First install the package: <code className="text-xs bg-muted px-1.5 py-0.5 rounded">npm install snitchui</code>. Then scaffold the component with the CLI below. It installs dependencies and creates the component file automatically.
         </p>
         <div className="rounded-lg border border-border overflow-hidden">
           <div className="flex items-center justify-between bg-muted px-4 py-2.5 border-b border-border">
