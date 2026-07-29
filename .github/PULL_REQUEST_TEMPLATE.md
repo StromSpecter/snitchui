@@ -17,3 +17,4 @@
 - [ ] Build passes (`npm run build`)
 - [ ] Component follows DESIGN_SYSTEM.md
 - [ ] Component follows COMPONENT_GUIDE.md
+- [ ] Responsive and accessible

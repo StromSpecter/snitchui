@@ -211,6 +211,91 @@ style(card)
 
 ---
 
+# Git Branch
+
+Use conventional branch naming.
+
+Format
+
+[type]/<description>
+
+Allowed types
+
+feat — New feature
+
+fix — Bug fix
+
+docs — Documentation
+
+refactor — Code restructuring
+
+style — Styling only
+
+chore — Maintenance, build, config
+
+test — Test addition or update
+
+ci — CI/CD changes
+
+release — Release preparation
+
+hotfix — Emergency fix
+
+Rules
+
+Lowercase only.
+
+Hyphen-separated, no spaces.
+
+Branch from develop for features and fixes.
+
+Merge to main via Pull Request.
+
+Examples
+
+feat/label-component
+
+fix/defer-query-effect
+
+docs/README-update
+
+---
+
+# Versioning
+
+Use Semantic Versioning (SemVer) with Conventional Commits.
+
+Format
+
+`major.minor.patch` (contoh: `1.0.1`)
+
+Bump rules
+
+Conventional commit type menentukan bump:
+
+- `feat(...)` → minor bump (1.0.0 → 1.1.0)
+- `fix(...)` → patch bump (1.0.0 → 1.0.1)
+- `BREAKING CHANGE` di body commit → major bump (1.0.0 → 2.0.0)
+
+Release process
+
+1. Bump versi di `package.json`
+2. Commit dengan `chore(release): bump version X.Y.Z`
+3. Push tag ke `main`
+4. Vercel auto-deploy ke production
+
+Commands
+
+Bump manually
+
+```
+npm version patch
+npm version minor
+npm version major
+```
+
+---
+
 # Definition of Done
 
 A task is complete only if

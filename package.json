@@ -9,6 +9,7 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
+    "release": "bash bin/release.sh",
     "preview": "vite preview"
   },
   "dependencies": {
