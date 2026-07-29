@@ -21,7 +21,7 @@ const TimePicker = forwardRef(
       onChange,
       disabled = false,
       use12Hour = false,
-      showSeconds = true,
+      showSeconds = false,
       ...props
     },
     ref
@@ -37,8 +37,7 @@ const TimePicker = forwardRef(
             : field === 'm'
             ? { h, m: val, s }
             : { h, m, s: val }
-        const time = formatTime(next.h, next.m, next.s)
-        if (onChange) onChange(time)
+        if (onChange) onChange(formatTime(next.h, next.m, next.s))
       },
       [h, m, s, onChange]
     )
@@ -46,7 +45,7 @@ const TimePicker = forwardRef(
     const handleInput = useCallback(
       (field) => (e) => {
         const max = field === 'h' ? (use12Hour ? 12 : 23) : 59
-        const val = Math.min(max, Math.max(0, parseInt(e.target.value, 10) || 0))
+        const val = clamp(parseInt(e.target.value, 10) || 0, 0, max)
         updateTime(field, val)
       },
       [use12Hour, updateTime]
@@ -55,137 +54,158 @@ const TimePicker = forwardRef(
     const ampm = h >= 12 ? 'PM' : 'AM'
     const h12 = h % 12 || 12
 
-    const inputClass = cn(
-      'w-12 rounded-md border border-input bg-transparent px-1 py-2 text-center text-sm font-medium shadow-sm outline-none transition-colors',
-      'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-      'disabled:cursor-not-allowed disabled:opacity-50',
-      'hover:bg-accent'
-    )
-
-    const labelClass = cn(
-      'block text-center text-xs font-medium text-muted-foreground mb-1'
-    )
-
-    const fieldWrapper = cn('flex flex-col items-center gap-0.5 min-w-[52px]')
+    const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v))
 
     return (
       <div
-        className={cn('inline-flex items-start gap-3', className)}
+        className={cn(
+          'inline-flex flex-col gap-3 p-3 rounded-xl border border-input bg-background shadow-sm',
+          className
+        )}
         ref={ref}
         {...props}
       >
-        <div className={fieldWrapper}>
-          <span className={labelClass}>Hours</span>
-          <input
-            type="number"
-            min={use12Hour ? 1 : 0}
-            max={use12Hour ? 12 : 23}
-            value={use12Hour ? h12 : h}
-            onChange={handleInput('h')}
-            onFocus={() => setFocusedField('h')}
-            onBlur={() => setFocusedField(null)}
-            className={cn(
-              inputClass,
-              focusedField === 'h' && 'border-ring bg-accent'
-            )}
-            disabled={disabled}
-            aria-label="Hours"
-          />
+        <div className="flex items-center justify-between mb-1">
+          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            Time
+          </span>
+          <span className="text-xs text-muted-foreground/60 font-mono">
+            {formatTime(h, m, s)}
+          </span>
         </div>
 
-        <span className="text-muted-foreground text-sm pt-5 select-none">
-          :
-        </span>
-
-        <div className={fieldWrapper}>
-          <span className={labelClass}>Minutes</span>
-          <input
-            type="number"
-            min={0}
-            max={59}
-            value={m}
-            onChange={handleInput('m')}
-            onFocus={() => setFocusedField('m')}
-            onBlur={() => setFocusedField(null)}
-            className={cn(
-              inputClass,
-              focusedField === 'm' && 'border-ring bg-accent'
-            )}
-            disabled={disabled}
-            aria-label="Minutes"
-          />
-        </div>
-
-        {showSeconds && (
-          <>
-            <span className="text-muted-foreground text-sm pt-5 select-none">
-              :
+        <div className="inline-flex items-start gap-4">
+          <div className="flex flex-col items-center gap-1.5">
+            <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+              HH
             </span>
-
-            <div className={fieldWrapper}>
-              <span className={labelClass}>Seconds</span>
-              <input
-                type="number"
-                min={0}
-                max={59}
-                value={s}
-                onChange={handleInput('s')}
-                onFocus={() => setFocusedField('s')}
-                onBlur={() => setFocusedField(null)}
-                className={cn(
-                  inputClass,
-                  focusedField === 's' && 'border-ring bg-accent'
-                )}
-                disabled={disabled}
-                aria-label="Seconds"
-              />
-            </div>
-          </>
-        )}
-
-        {use12Hour && (
-          <div className="flex flex-col items-center gap-1 pt-1">
-            <span className={labelClass}>Period</span>
-            <div className="flex rounded-md border border-input overflow-hidden">
-              <button
-                type="button"
-                className={cn(
-                  'px-3 py-2 text-xs font-medium transition-colors',
-                  ampm === 'AM'
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-background text-muted-foreground hover:bg-accent'
-                )}
-                onClick={() => {
-                  const newH = ampm === 'AM' ? h : (h - 12 + 12) % 24
-                  updateTime('h', newH)
-                }}
-                disabled={disabled}
-                aria-label="AM"
-              >
-                AM
-              </button>
-              <button
-                type="button"
-                className={cn(
-                  'px-3 py-2 text-xs font-medium transition-colors border-l border-input',
-                  ampm === 'PM'
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-background text-muted-foreground hover:bg-accent'
-                )}
-                onClick={() => {
-                  let newH = h
-                  if (ampm === 'AM' && h < 12) newH = h + 12
-                  if (ampm === 'PM' && h >= 12) newH = h - 12
-                  updateTime('h', newH)
-                }}
-                disabled={disabled}
-                aria-label="PM"
-              >
-                PM
-              </button>
-            </div>
+            <input
+              type="number"
+              min={use12Hour ? 1 : 0}
+              max={use12Hour ? 12 : 23}
+              value={use12Hour ? h12 : h}
+              onChange={handleInput('h')}
+              onFocus={() => setFocusedField('h')}
+              onBlur={() => setFocusedField(null)}
+              className={cn(
+                'w-14 h-11 rounded-lg border border-input bg-transparent px-2 py-2 text-center text-lg font-semibold tracking-tight outline-none transition-all duration-150',
+                'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
+                'hover:border-accent-foreground/50',
+                disabled && 'cursor-not-allowed opacity-50',
+                focusedField === 'h' && 'border-primary bg-primary/5'
+              )}
+              disabled={disabled}
+              aria-label="Hours"
+            />
           </div>
-        )}
+
+          <span className="text-lg font-light text-muted-foreground/50 mt-4 select-none">
+            :
+          </span>
+
+          <div className="flex flex-col items-center gap-1.5">
+            <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+              MM
+            </span>
+            <input
+              type="number"
+              min={0}
+              max={59}
+              value={m}
+              onChange={handleInput('m')}
+              onFocus={() => setFocusedField('m')}
+              onBlur={() => setFocusedField(null)}
+              className={cn(
+                'w-14 h-11 rounded-lg border border-input bg-transparent px-2 py-2 text-center text-lg font-semibold tracking-tight outline-none transition-all duration-150',
+                'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
+                'hover:border-accent-foreground/50',
+                disabled && 'cursor-not-allowed opacity-50',
+                focusedField === 'm' && 'border-primary bg-primary/5'
+              )}
+              disabled={disabled}
+              aria-label="Minutes"
+            />
+          </div>
+
+          {showSeconds && (
+            <>
+              <span className="text-lg font-light text-muted-foreground/50 mt-4 select-none">
+                :
+              </span>
+
+              <div className="flex flex-col items-center gap-1.5">
+                <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+                  SS
+                </span>
+                <input
+                  type="number"
+                  min={0}
+                  max={59}
+                  value={s}
+                  onChange={handleInput('s')}
+                  onFocus={() => setFocusedField('s')}
+                  onBlur={() => setFocusedField(null)}
+                  className={cn(
+                    'w-14 h-11 rounded-lg border border-input bg-transparent px-2 py-2 text-center text-lg font-semibold tracking-tight outline-none transition-all duration-150',
+                    'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
+                    'hover:border-accent-foreground/50',
+                    disabled && 'cursor-not-allowed opacity-50',
+                    focusedField === 's' && 'border-primary bg-primary/5'
+                  )}
+                  disabled={disabled}
+                  aria-label="Seconds"
+                />
+              </div>
+            </>
+          )}
+
+          {use12Hour && (
+            <div className="flex flex-col items-center gap-1.5 ml-2">
+              <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+                AM/PM
+              </span>
+              <div className="flex rounded-lg border border-input overflow-hidden shadow-sm">
+                <button
+                  type="button"
+                  className={cn(
+                    'h-11 w-14 flex items-center justify-center text-xs font-bold transition-all duration-150',
+                    ampm === 'AM'
+                      ? 'bg-primary text-primary-foreground shadow-inner'
+                      : 'bg-background text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                  )}
+                  onClick={() => {
+                    const newH = ampm === 'AM' ? h : (h - 12 + 12) % 24
+                    updateTime('h', newH)
+                  }}
+                  disabled={disabled}
+                  aria-label="AM"
+                >
+                  AM
+                </button>
+                <div className="w-px bg-input" />
+                <button
+                  type="button"
+                  className={cn(
+                    'h-11 w-14 flex items-center justify-center text-xs font-bold transition-all duration-150',
+                    ampm === 'PM'
+                      ? 'bg-primary text-primary-foreground shadow-inner'
+                      : 'bg-background text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                  )}
+                  onClick={() => {
+                    let newH = h
+                    if (ampm === 'AM' && h < 12) newH = h + 12
+                    if (ampm === 'PM' && h >= 12) newH = h - 12
+                    updateTime('h', newH)
+                  }}
+                  disabled={disabled}
+                  aria-label="PM"
+                >
+                  PM
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     )
   }
