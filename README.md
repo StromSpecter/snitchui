@@ -31,6 +31,13 @@ SnitchUI provides copy-paste, reusable UI components for React + Tailwind CSS pr
 | `Label` | Accessible label element bound to form inputs |
 | `Input` | Form input field with focus and disabled states |
 | `Select` | Dropdown select with grouped items and labels |
+| `Checkbox` | Toggle between checked/unchecked with accessibility support |
+| `Combobox` | Searchable multi-select dropdown with chip input |
+| `DatePicker` | Calendar-based date picker |
+| `RadioButton` | Radio group for single selection from multiple options |
+| `Switch` | Toggle switch for binary on/off states |
+| `Textarea` | Multi-line text input with focus and disabled states |
+| `TimePicker` | Time picker for hours, minutes, and seconds |
 
 ## Installation
 
@@ -84,6 +91,13 @@ npx snitchui add button
 npx snitchui add label
 npx snitchui add input
 npx snitchui add select
+npx snitchui add checkbox
+npx snitchui add combobox
+npx snitchui add datepicker
+npx snitchui add radiobutton
+npx snitchui add switch
+npx snitchui add textarea
+npx snitchui add timepicker
 ```
 
 Options:
