@@ -1,6 +1,10 @@
 # SnitchUI
 
 <p align="center">
+  <img src="https://github.com/StromSpecter/snitchui/raw/main/src/assets/snitchui.jpeg" alt="SnitchUI" width="600" />
+</p>
+
+<p align="center">
   A modern, accessible React UI component library built with Tailwind CSS and shadcn/ui inspired design.
 </p>
 
