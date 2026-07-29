@@ -1,14 +1,48 @@
 import { forwardRef } from 'react'
 import { cn } from '../../../lib/utils.js'
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
+
+const MONTHS = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+]
+const DAYS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
+
+function daysInMonth(year, month) {
+  return new Date(year, month + 1, 0).getDate()
+}
+
+function firstDayOfMonth(year, month) {
+  return new Date(year, month, 1).getDay()
+}
 
 const DatePicker = forwardRef(
   ({ className, value, onChange, placeholder, ...props }, ref) => {
     const [showCalendar, setShowCalendar] = useState(false)
-    const [selectedDate, setSelectedDate] =
-      useState(value ? new Date(value) : null)
+    const [selectedDate, setSelectedDate] = useState(
+      value ? new Date(value) : null
+    )
+    const [viewDate, setViewDate] = useState(
+      value ? new Date(value) : new Date()
+    )
 
-    const handleSelect = (date) => {
+    const year = viewDate.getFullYear()
+    const month = viewDate.getMonth()
+    const totalDays = daysInMonth(year, month)
+    const startDay = firstDayOfMonth(year, month)
+    const today = new Date()
+    const isToday = (d) =>
+      d.getDate() === today.getDate() &&
+      d.getMonth() === today.getMonth() &&
+      d.getFullYear() === today.getFullYear()
+    const isSelected = (d) =>
+      selectedDate &&
+      d.getDate() === selectedDate.getDate() &&
+      d.getMonth() === selectedDate.getMonth() &&
+      d.getFullYear() === selectedDate.getFullYear()
+
+    const handleSelect = (day) => {
+      const date = new Date(year, month, day)
       setSelectedDate(date)
       setShowCalendar(false)
       if (onChange) {
@@ -24,6 +58,31 @@ const DatePicker = forwardRef(
         day: 'numeric',
       })
     }
+
+    const prevMonth = () => {
+      setViewDate((prev) => {
+        const next = new Date(prev.getFullYear(), prev.getMonth() - 1, 1)
+        return next
+      })
+    }
+
+    const nextMonth = () => {
+      setViewDate((prev) => {
+        const next = new Date(prev.getFullYear(), prev.getMonth() + 1, 1)
+        return next
+      })
+    }
+
+    const calendarDays = useMemo(() => {
+      const days = []
+      for (let i = 0; i < startDay; i++) {
+        days.push(null)
+      }
+      for (let day = 1; day <= totalDays; day++) {
+        days.push(new Date(year, month, day))
+      }
+      return days
+    }, [year, month, startDay, totalDays])
 
     return (
       <div className="relative">
@@ -46,51 +105,49 @@ const DatePicker = forwardRef(
               <button
                 type="button"
                 className="text-sm font-medium text-muted-foreground hover:text-foreground"
+                onClick={prevMonth}
               >
                 Previous
               </button>
               <span className="text-sm font-medium">
-                {selectedDate?.toLocaleDateString('en-US', {
-                  month: 'long',
-                  year: 'numeric',
-                })}
+                {MONTHS[month]} {year}
               </span>
               <button
                 type="button"
                 className="text-sm font-medium text-muted-foreground hover:text-foreground"
+                onClick={nextMonth}
               >
                 Next
               </button>
             </div>
             <div className="grid grid-cols-7 gap-1 text-center text-sm">
-              {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((d) => (
+              {DAYS.map((d) => (
                 <div key={d} className="text-muted-foreground font-medium">
                   {d}
                 </div>
               ))}
-              {Array.from({ length: 31 }, (_, i) => (
-                <button
-                  key={i + 1}
-                  type="button"
-                  className={cn(
-                    'h-8 w-8 rounded-md text-sm hover:bg-accent hover:text-accent-foreground',
-                    selectedDate?.getDate() === i + 1 &&
-                      selectedDate?.getMonth() === new Date().getMonth() &&
-                      'bg-primary text-primary-foreground'
-                  )}
-                  onClick={() =>
-                    handleSelect(
-                      new Date(
-                        selectedDate?.getFullYear() || new Date().getFullYear(),
-                        selectedDate?.getMonth() || new Date().getMonth(),
-                        i + 1
-                      )
-                    )
-                  }
-                >
-                  {i + 1}
-                </button>
-              ))}
+              {calendarDays.map((date, i) =>
+                date === null ? (
+                  <div key={`empty-${i}`} className="h-8" />
+                ) : (
+                  <button
+                    key={i}
+                    type="button"
+                    className={cn(
+                      'h-8 w-8 rounded-md text-sm hover:bg-accent hover:text-accent-foreground',
+                      isToday(date) &&
+                        'bg-muted text-muted-foreground font-medium',
+                      isSelected(date) &&
+                        'bg-primary text-primary-foreground',
+                      !isToday(date) && !isSelected(date) &&
+                        'text-foreground'
+                    )}
+                    onClick={() => handleSelect(date.getDate())}
+                  >
+                    {date.getDate()}
+                  </button>
+                )
+              )}
             </div>
           </div>
         )}
