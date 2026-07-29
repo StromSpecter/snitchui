@@ -1,17 +1,11 @@
-import { forwardRef, useState, useCallback } from 'react'
+import { forwardRef, useState, useMemo, useCallback } from 'react'
 import { cn } from '../../../lib/utils.js'
 
 const pad = (n) => String(n).padStart(2, '0')
 
-function parseTime(value) {
-  if (!value) return { h: 0, m: 0, s: 0 }
-  const parts = value.split(':').map(Number)
-  return { h: parts[0] || 0, m: parts[1] || 0, s: parts[2] || 0 }
-}
-
-function formatTime(h, m, s) {
-  return `${pad(h)}:${pad(m)}:${pad(s)}`
-}
+const HOURS_12 = Array.from({ length: 12 }, (_, i) => i + 1)
+const HOURS_24 = Array.from({ length: 24 }, (_, i) => i)
+const MINUTES = Array.from({ length: 12 }, (_, i) => i * 5)
 
 const TimePicker = forwardRef(
   (
@@ -19,193 +13,255 @@ const TimePicker = forwardRef(
       className,
       value,
       onChange,
+      placeholder,
       disabled = false,
-      use12Hour = false,
-      showSeconds = false,
       ...props
     },
     ref
   ) => {
-    const [focusedField, setFocusedField] = useState(null)
-    const { h, m, s } = parseTime(value)
+    const [open, setOpen] = useState(false)
+    const [mode, setMode] = useState('12h')
+    const [ampm, setAmpm] = useState('AM')
+    const [selH, setSelH] = useState(null)
+    const [selM, setSelM] = useState(null)
 
-    const updateTime = useCallback(
-      (field, val) => {
-        const next =
-          field === 'h'
-            ? { h: val, m, s }
-            : field === 'm'
-            ? { h, m: val, s }
-            : { h, m, s: val }
-        if (onChange) onChange(formatTime(next.h, next.m, next.s))
-      },
-      [h, m, s, onChange]
-    )
+    const init = useCallback(() => {
+      if (value) {
+        const [hStr, mStr] = value.split(':')
+        const h = parseInt(hStr, 10) || 0
+        const m = parseInt(mStr, 10) || 0
+        if (mode === '12h') {
+          const h12 = h % 12 || 12
+          setSelH(h12)
+          setAmpm(h >= 12 ? 'PM' : 'AM')
+        } else {
+          setSelH(h)
+          setAmpm(h >= 12 ? 'PM' : 'AM')
+        }
+        setSelM(m)
+      } else {
+        setSelH(null)
+        setSelM(null)
+        setAmpm('AM')
+      }
+    }, [value, mode])
 
-    const handleInput = useCallback(
-      (field) => (e) => {
-        const max = field === 'h' ? (use12Hour ? 12 : 23) : 59
-        const val = clamp(parseInt(e.target.value, 10) || 0, 0, max)
-        updateTime(field, val)
-      },
-      [use12Hour, updateTime]
-    )
+    const handleOpen = useCallback(() => {
+      if (disabled) return
+      init()
+      setOpen(true)
+    }, [disabled, init])
 
-    const ampm = h >= 12 ? 'PM' : 'AM'
-    const h12 = h % 12 || 12
+    const handleClose = useCallback(() => {
+      setOpen(false)
+    }, [])
 
-    const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v))
+    const handleModeSwitch = useCallback((m) => {
+      setMode(m)
+      setSelH(null)
+      setSelM(null)
+      setAmpm('AM')
+    }, [])
+
+    const handleHour = useCallback((h) => {
+      setSelH(h)
+    }, [])
+
+    const handleMinute = useCallback((m) => {
+      setSelM(m)
+    }, [])
+
+    const handleAmpm = useCallback((v) => {
+      setAmpm(v)
+    }, [])
+
+    const handleOk = useCallback(() => {
+      if (selH === null || selM === null) return
+      let h24 = selH
+      if (mode === '12h') {
+        if (ampm === 'AM') h24 = selH === 12 ? 0 : selH
+        else h24 = selH === 12 ? 12 : selH + 12
+      }
+      const formatted = `${pad(h24)}:${pad(selM)}:00`
+      if (onChange) onChange(formatted)
+      setOpen(false)
+    }, [selH, selM, mode, ampm, onChange])
+
+    const formattedDisplay = useMemo(() => {
+      if (!value) return ''
+      const parts = value.split(':').map(Number)
+      const h = parts[0] || 0
+      const m = parts[1] || 0
+      if (mode === '12h') {
+        const h12 = h % 12 || 12
+        return `${pad(h12)}:${pad(m)} ${h >= 12 ? 'PM' : 'AM'}`
+      }
+      return `${pad(h)}:${pad(m)}`
+    }, [value, mode])
+
+    const hours = mode === '12h' ? HOURS_12 : HOURS_24
 
     return (
-      <div
-        className={cn(
-          'inline-flex flex-col gap-3 p-3 rounded-xl border border-input bg-background shadow-sm',
-          className
-        )}
-        ref={ref}
-        {...props}
-      >
-        <div className="flex items-center justify-between mb-1">
-          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            Time
-          </span>
-          <span className="text-xs text-muted-foreground/60 font-mono">
-            {formatTime(h, m, s)}
-          </span>
-        </div>
-
-        <div className="inline-flex items-start gap-4">
-          <div className="flex flex-col items-center gap-1.5">
-            <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
-              HH
-            </span>
-            <input
-              type="number"
-              min={use12Hour ? 1 : 0}
-              max={use12Hour ? 12 : 23}
-              value={use12Hour ? h12 : h}
-              onChange={handleInput('h')}
-              onFocus={() => setFocusedField('h')}
-              onBlur={() => setFocusedField(null)}
-              className={cn(
-                'w-14 h-11 rounded-lg border border-input bg-transparent px-2 py-2 text-center text-lg font-semibold tracking-tight outline-none transition-all duration-150',
-                'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
-                'hover:border-accent-foreground/50',
-                disabled && 'cursor-not-allowed opacity-50',
-                focusedField === 'h' && 'border-primary bg-primary/5'
-              )}
-              disabled={disabled}
-              aria-label="Hours"
-            />
-          </div>
-
-          <span className="text-lg font-light text-muted-foreground/50 mt-4 select-none">
-            :
-          </span>
-
-          <div className="flex flex-col items-center gap-1.5">
-            <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
-              MM
-            </span>
-            <input
-              type="number"
-              min={0}
-              max={59}
-              value={m}
-              onChange={handleInput('m')}
-              onFocus={() => setFocusedField('m')}
-              onBlur={() => setFocusedField(null)}
-              className={cn(
-                'w-14 h-11 rounded-lg border border-input bg-transparent px-2 py-2 text-center text-lg font-semibold tracking-tight outline-none transition-all duration-150',
-                'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
-                'hover:border-accent-foreground/50',
-                disabled && 'cursor-not-allowed opacity-50',
-                focusedField === 'm' && 'border-primary bg-primary/5'
-              )}
-              disabled={disabled}
-              aria-label="Minutes"
-            />
-          </div>
-
-          {showSeconds && (
-            <>
-              <span className="text-lg font-light text-muted-foreground/50 mt-4 select-none">
-                :
-              </span>
-
-              <div className="flex flex-col items-center gap-1.5">
-                <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
-                  SS
-                </span>
-                <input
-                  type="number"
-                  min={0}
-                  max={59}
-                  value={s}
-                  onChange={handleInput('s')}
-                  onFocus={() => setFocusedField('s')}
-                  onBlur={() => setFocusedField(null)}
-                  className={cn(
-                    'w-14 h-11 rounded-lg border border-input bg-transparent px-2 py-2 text-center text-lg font-semibold tracking-tight outline-none transition-all duration-150',
-                    'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
-                    'hover:border-accent-foreground/50',
-                    disabled && 'cursor-not-allowed opacity-50',
-                    focusedField === 's' && 'border-primary bg-primary/5'
-                  )}
-                  disabled={disabled}
-                  aria-label="Seconds"
-                />
-              </div>
-            </>
+      <div className={cn('relative', className)} ref={ref} {...props}>
+        <input
+          type="text"
+          className={cn(
+            'flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
+            'cursor-pointer'
           )}
+          value={formattedDisplay}
+          placeholder={placeholder || 'Select time...'}
+          readOnly
+          onClick={handleOpen}
+          onKeyDown={(e) => e.key === 'Escape' && handleClose()}
+          disabled={disabled}
+          aria-label="Time picker"
+        />
 
-          {use12Hour && (
-            <div className="flex flex-col items-center gap-1.5 ml-2">
-              <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
-                AM/PM
+        {open && (
+          <div className="absolute z-10 mt-2 w-72 rounded-xl border border-border bg-background p-4 shadow-xl animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                Select Time
               </span>
-              <div className="flex rounded-lg border border-input overflow-hidden shadow-sm">
+              <div className="flex rounded-lg border border-input overflow-hidden">
                 <button
                   type="button"
                   className={cn(
-                    'h-11 w-14 flex items-center justify-center text-xs font-bold transition-all duration-150',
-                    ampm === 'AM'
-                      ? 'bg-primary text-primary-foreground shadow-inner'
-                      : 'bg-background text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                    'px-3 h-7 text-xs font-semibold transition-colors',
+                    mode === '12h'
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-background text-muted-foreground hover:bg-accent'
                   )}
-                  onClick={() => {
-                    const newH = ampm === 'AM' ? h : (h - 12 + 12) % 24
-                    updateTime('h', newH)
-                  }}
-                  disabled={disabled}
-                  aria-label="AM"
+                  onClick={() => handleModeSwitch('12h')}
                 >
-                  AM
+                  AM/PM
                 </button>
                 <div className="w-px bg-input" />
                 <button
                   type="button"
                   className={cn(
-                    'h-11 w-14 flex items-center justify-center text-xs font-bold transition-all duration-150',
-                    ampm === 'PM'
-                      ? 'bg-primary text-primary-foreground shadow-inner'
-                      : 'bg-background text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                    'px-3 h-7 text-xs font-semibold transition-colors',
+                    mode === '24h'
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-background text-muted-foreground hover:bg-accent'
                   )}
-                  onClick={() => {
-                    let newH = h
-                    if (ampm === 'AM' && h < 12) newH = h + 12
-                    if (ampm === 'PM' && h >= 12) newH = h - 12
-                    updateTime('h', newH)
-                  }}
-                  disabled={disabled}
-                  aria-label="PM"
+                  onClick={() => handleModeSwitch('24h')}
                 >
-                  PM
+                  All
                 </button>
               </div>
             </div>
-          )}
-        </div>
+
+            <div className="mb-3">
+              <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-2 block">
+                Hour
+              </span>
+              <div className="grid grid-cols-6 gap-1.5 max-h-28 overflow-y-auto">
+                {hours.map((h) => (
+                  <button
+                    key={h}
+                    type="button"
+                    className={cn(
+                      'h-8 w-full rounded-md text-sm font-medium transition-all duration-100',
+                      'hover:bg-accent hover:text-accent-foreground',
+                      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                      selH === h
+                        ? 'bg-primary text-primary-foreground shadow-sm'
+                        : 'text-foreground'
+                    )}
+                    onClick={() => handleHour(h)}
+                  >
+                    {pad(h)}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-2 block">
+                Minute
+              </span>
+              <div className="grid grid-cols-6 gap-1.5">
+                {MINUTES.map((m) => (
+                  <button
+                    key={m}
+                    type="button"
+                    className={cn(
+                      'h-8 w-full rounded-md text-sm font-medium transition-all duration-100',
+                      'hover:bg-accent hover:text-accent-foreground',
+                      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                      selM === m
+                        ? 'bg-primary text-primary-foreground shadow-sm'
+                        : 'text-foreground'
+                    )}
+                    onClick={() => handleMinute(m)}
+                  >
+                    {pad(m)}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {mode === '12h' && (
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+                  Period
+                </span>
+                <div className="flex rounded-lg border border-input overflow-hidden ml-auto">
+                  <button
+                    type="button"
+                    className={cn(
+                      'px-4 h-8 text-xs font-bold transition-colors',
+                      ampm === 'AM'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-background text-muted-foreground hover:bg-accent'
+                    )}
+                    onClick={() => handleAmpm('AM')}
+                  >
+                    AM
+                  </button>
+                  <div className="w-px bg-input" />
+                  <button
+                    type="button"
+                    className={cn(
+                      'px-4 h-8 text-xs font-bold transition-colors',
+                      ampm === 'PM'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-background text-muted-foreground hover:bg-accent'
+                    )}
+                    onClick={() => handleAmpm('PM')}
+                  >
+                    PM
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <div className="flex items-center justify-end gap-2 border-t border-border pt-3">
+              <button
+                type="button"
+                className="h-9 px-4 rounded-md text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                onClick={handleClose}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className={cn(
+                  'h-9 px-4 rounded-md text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                  selH !== null && selM !== null
+                    ? 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm'
+                    : 'bg-muted text-muted-foreground cursor-not-allowed'
+                )}
+                onClick={handleOk}
+                disabled={selH === null || selM === null}
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     )
   }
