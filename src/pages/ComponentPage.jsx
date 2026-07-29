@@ -4,12 +4,26 @@ import { ButtonPage } from './ButtonPage.jsx'
 import { LabelPage } from './LabelPage.jsx'
 import { InputPage } from './InputPage.jsx'
 import { SelectPage } from './SelectPage.jsx'
+import { CheckboxPage } from './CheckboxPage.jsx'
+import { ComboboxPage } from './ComboboxPage.jsx'
+import { DatePickerPage } from './DatePickerPage.jsx'
+import { RadioButtonPage } from './RadioButtonPage.jsx'
+import { SwitchPage } from './SwitchPage.jsx'
+import { TextareaPage } from './TextareaPage.jsx'
+import { TimePickerPage } from './TimePickerPage.jsx'
 
 const pageMap = {
   button: ButtonPage,
   label: LabelPage,
   input: InputPage,
   select: SelectPage,
+  checkbox: CheckboxPage,
+  combobox: ComboboxPage,
+  datepicker: DatePickerPage,
+  radiobutton: RadioButtonPage,
+  switch: SwitchPage,
+  textarea: TextareaPage,
+  timepicker: TimePickerPage,
 }
 
 export function ComponentPage() {
