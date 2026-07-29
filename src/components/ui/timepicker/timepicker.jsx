@@ -24,10 +24,14 @@ const TimePicker = forwardRef(
     const [ampm, setAmpm] = useState('AM')
     const [selH, setSelH] = useState(null)
     const [selM, setSelM] = useState(null)
+    const [selectedTime, setSelectedTime] = useState('')
+
+    const currentValue = value || selectedTime
 
     const init = useCallback(() => {
-      if (value) {
-        const [hStr, mStr] = value.split(':')
+      const src = value || selectedTime
+      if (src) {
+        const [hStr, mStr] = src.split(':')
         const h = parseInt(hStr, 10) || 0
         const m = parseInt(mStr, 10) || 0
         if (mode === '12h') {
@@ -44,7 +48,7 @@ const TimePicker = forwardRef(
         setSelM(null)
         setAmpm('AM')
       }
-    }, [value, mode])
+    }, [value, selectedTime, mode])
 
     const handleOpen = useCallback(() => {
       if (disabled) return
@@ -83,13 +87,14 @@ const TimePicker = forwardRef(
         else h24 = selH === 12 ? 12 : selH + 12
       }
       const formatted = `${pad(h24)}:${pad(selM)}:00`
+      setSelectedTime(formatted)
       if (onChange) onChange(formatted)
       setOpen(false)
     }, [selH, selM, mode, ampm, onChange])
 
     const formattedDisplay = useMemo(() => {
-      if (!value) return ''
-      const parts = value.split(':').map(Number)
+      if (!currentValue) return ''
+      const parts = currentValue.split(':').map(Number)
       const h = parts[0] || 0
       const m = parts[1] || 0
       if (mode === '12h') {
@@ -97,7 +102,7 @@ const TimePicker = forwardRef(
         return `${pad(h12)}:${pad(m)} ${h >= 12 ? 'PM' : 'AM'}`
       }
       return `${pad(h)}:${pad(m)}`
-    }, [value, mode])
+    }, [currentValue, mode])
 
     const hours = mode === '12h' ? HOURS_12 : HOURS_24
 
