@@ -1,1 +1,1 @@
-export { Checkbox } from './Checkbox.jsx'
+export { Checkbox } from './checkbox.jsx'

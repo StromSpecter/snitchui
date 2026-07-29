@@ -7,4 +7,4 @@ export {
   ComboboxItem,
   ComboboxLabel,
   ComboboxSeparator,
-} from './Combobox.jsx'
+} from './combobox.jsx'

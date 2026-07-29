@@ -1,1 +1,1 @@
-export { Switch } from './Switch.jsx'
+export { Switch } from './switch.jsx'
