@@ -43,12 +43,26 @@ export function TimePickerPage() {
         <h2 className="mb-4 text-xl font-semibold tracking-tight">Usage</h2>
         <CodeBlock
           code={`import { TimePicker } from '@/components/ui/timepicker'
+import { useState } from 'react'
 
 export function Example() {
+  const [time, setTime] = useState('')
+
   return (
     <div className="space-y-4">
-      <TimePicker placeholder="Select time" />
-      <TimePicker placeholder="With value" value="14:30:00" />
+      <TimePicker
+        value={time}
+        onChange={setTime}
+        placeholder="Select time"
+      />
+      <TimePicker
+        value="14:30:00"
+        placeholder="With default value"
+      />
+      <TimePicker
+        placeholder="Disabled"
+        disabled
+      />
     </div>
   )
 }`}

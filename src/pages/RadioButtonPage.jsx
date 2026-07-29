@@ -42,14 +42,23 @@ export function RadioButtonPage() {
       <section className="mb-12">
         <h2 className="mb-4 text-xl font-semibold tracking-tight">Usage</h2>
         <CodeBlock
-          code={`import { RadioButtonGroup, RadioButtonItem } from '@/components/ui/radiobutton'
+          code={`import { RadioButtonGroup, RadioButtonItem, RadioButtonLabel } from '@/components/ui/radiobutton'
 
 export function Example() {
   return (
     <RadioButtonGroup defaultValue="option1">
-      <RadioButtonItem value="option1" />
-      <RadioButtonItem value="option2" />
-      <RadioButtonItem value="option3" />
+      <div className="flex items-center gap-2 text-sm">
+        <RadioButtonItem value="option1" />
+        <RadioButtonLabel>Option 1</RadioButtonLabel>
+      </div>
+      <div className="flex items-center gap-2 text-sm">
+        <RadioButtonItem value="option2" />
+        <RadioButtonLabel>Option 2</RadioButtonLabel>
+      </div>
+      <div className="flex items-center gap-2 text-sm">
+        <RadioButtonItem value="option3" disabled />
+        <RadioButtonLabel className="text-muted-foreground">Option 3 (disabled)</RadioButtonLabel>
+      </div>
     </RadioButtonGroup>
   )
 }`}

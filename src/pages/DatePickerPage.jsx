@@ -43,12 +43,22 @@ export function DatePickerPage() {
         <h2 className="mb-4 text-xl font-semibold tracking-tight">Usage</h2>
         <CodeBlock
           code={`import { DatePicker } from '@/components/ui/datepicker'
+import { useState } from 'react'
 
 export function Example() {
+  const [date, setDate] = useState('')
+
   return (
     <div className="space-y-4">
-      <DatePicker placeholder="Pick a date" />
-      <DatePicker placeholder="With value" value="2024-01-15" />
+      <DatePicker
+        value={date}
+        onChange={setDate}
+        placeholder="Pick a date"
+      />
+      <DatePicker
+        value="2024-01-15"
+        placeholder="With default value"
+      />
     </div>
   )
 }`}

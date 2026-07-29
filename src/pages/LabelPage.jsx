@@ -47,9 +47,19 @@ import { Input } from '@/components/ui/input'
 
 export function Example() {
   return (
-    <div className="space-y-2">
-      <Label htmlFor="name">Name</Label>
-      <Input id="name" placeholder="Enter your name" />
+    <div className="space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="name">Name</Label>
+        <Input id="name" placeholder="Enter your name" />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="email">Email</Label>
+        <Input id="email" type="email" placeholder="you@example.com" required />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="disabled-field" className="text-muted-foreground">Disabled</Label>
+        <Input id="disabled-field" placeholder="Disabled input" disabled />
+      </div>
     </div>
   )
 }`}

@@ -47,8 +47,15 @@ export function TextareaPage() {
 export function Example() {
   return (
     <div className="space-y-4">
-      <Textarea placeholder="Enter your message..." />
+      <div className="space-y-2">
+        <label className="text-sm font-medium" htmlFor="message">Message</label>
+        <Textarea id="message" placeholder="Enter your message..." />
+      </div>
       <Textarea placeholder="Disabled textarea" disabled />
+      <Textarea
+        placeholder="With error"
+        className="border-destructive focus-visible:ring-destructive"
+      />
     </div>
   )
 }`}

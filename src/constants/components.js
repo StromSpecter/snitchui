@@ -66,17 +66,19 @@ export { Label }`
 export const INPUT_SOURCE = `import { forwardRef } from 'react'
 import { cn } from '../../lib/utils'
 
-const Input = forwardRef(({ className, type, ...props }, ref) => {
+const Input = forwardRef(({ className, type, size = 'md', ...props }, ref) => {
   return (
     <input
       type={type}
       className={cn(
-        'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
+        'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50',
+        size === 'sm' && 'h-8 px-2.5 text-xs',
+        size === 'lg' && 'h-10 px-4 text-base',
         className
       )}
       ref={ref}
       {...props}
-    )
+    />
   )
 })
 Input.displayName = 'Input'
@@ -702,8 +704,10 @@ export const components = [
     ],
     props: [
       { prop: 'type', type: 'string', default: '"text"', description: 'The input type (text, email, password, etc.)' },
+      { prop: 'size', type: '"sm" | "md" | "lg"', default: '"md"', description: 'Size of the input' },
       { prop: 'placeholder', type: 'string', default: '-', description: 'Placeholder text' },
       { prop: 'disabled', type: 'boolean', default: 'false', description: 'Disables the input' },
+      { prop: 'error', type: 'string', default: '-', description: 'Error message (also sets aria-invalid)' },
       { prop: 'className', type: 'string', default: '-', description: 'Additional CSS classes' },
     ],
   },

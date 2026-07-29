@@ -43,13 +43,17 @@ export function InputPage() {
         <h2 className="mb-4 text-xl font-semibold tracking-tight">Usage</h2>
         <CodeBlock
           code={`import { Input } from '@/components/ui/input'
+import { Search, Mail } from 'lucide-react'
 
 export function Example() {
   return (
     <div className="space-y-4">
       <Input placeholder="Default input" />
+      <Input startIcon={<Mail />} type="email" placeholder="Email with icon" />
       <Input placeholder="Disabled input" disabled />
-      <Input type="email" placeholder="you@example.com" />
+      <Input placeholder="Error" error="This field is required." />
+      <Input size="sm" placeholder="Small" />
+      <Input size="lg" placeholder="Large" />
     </div>
   )
 }`}

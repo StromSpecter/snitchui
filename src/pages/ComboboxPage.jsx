@@ -47,12 +47,17 @@ import { useState } from 'react'
 
 export function Example() {
   const [selected, setSelected] = useState([])
-  const frameworks = ['React', 'Vue', 'Svelte', 'Angular']
+  const items = ['React', 'Vue', 'Svelte', 'Angular']
 
   return (
-    <Combobox value={selected} onChange={setSelected}>
-      {frameworks.map((fw) => (
-        <ComboboxItem key={fw} value={fw}>{fw}</ComboboxItem>
+    <Combobox
+      value={selected}
+      onChange={setSelected}
+      placeholder="Select frameworks"
+      searchPlaceholder="Search..."
+    >
+      {items.map((item) => (
+        <ComboboxItem key={item} value={item}>{item}</ComboboxItem>
       ))}
     </Combobox>
   )

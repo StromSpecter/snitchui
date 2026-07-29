@@ -46,10 +46,19 @@ export function CheckboxPage() {
 
 export function Example() {
   return (
-    <div className="flex items-center gap-2">
-      <Checkbox />
-      <Checkbox checked />
-      <Checkbox disabled />
+    <div className="space-y-3">
+      <label className="flex items-center gap-2 text-sm cursor-pointer">
+        <Checkbox />
+        Accept terms and conditions
+      </label>
+      <label className="flex items-center gap-2 text-sm cursor-pointer">
+        <Checkbox defaultChecked />
+        Subscribe to newsletter
+      </label>
+      <label className="flex items-center gap-2 text-sm cursor-not-allowed">
+        <Checkbox disabled />
+        Disabled option
+      </label>
     </div>
   )
 }`}

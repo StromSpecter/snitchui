@@ -46,10 +46,19 @@ export function SwitchPage() {
 
 export function Example() {
   return (
-    <div className="flex items-center gap-3">
-      <Switch />
-      <Switch checked />
-      <Switch disabled />
+    <div className="space-y-4">
+      <label className="flex items-center gap-3 text-sm cursor-pointer">
+        <Switch />
+        Enable notifications
+      </label>
+      <label className="flex items-center gap-3 text-sm cursor-pointer">
+        <Switch defaultChecked />
+        Dark mode
+      </label>
+      <label className="flex items-center gap-3 text-sm cursor-not-allowed">
+        <Switch disabled />
+        <span className="text-muted-foreground">Auto-save (disabled)</span>
+      </label>
     </div>
   )
 }`}
