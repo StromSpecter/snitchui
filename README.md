@@ -5,7 +5,9 @@
 </p>
 
 <p align="center">
-  A modern, accessible React UI component library built with Tailwind CSS and shadcn/ui inspired design.
+  Build beautiful UI without the bloat.<br />
+  Copy-paste components built on <strong>Radix UI</strong> + <strong>Tailwind CSS v4</strong>.<br />
+  You own every line of code — install nothing, commit everything, customize anything.
 </p>
 
 <p align="center">
@@ -14,18 +16,35 @@
   <a href="https://www.npmjs.com/package/snitchui"><img src="https://img.shields.io/npm/l/snitchui.svg" alt="license"></a>
 </p>
 
-## Overview
+---
 
-SnitchUI provides copy-paste, reusable UI components for React + Tailwind CSS projects. Inspired by shadcn/ui and built with accessibility and composition-first APIs in mind.
+## Why SnitchUI?
+
+Most UI libraries force you into their ecosystem — install a package, ship hundreds of kB of dependencies, fight with customization. SnitchUI flips the model: **you own the code**.
+
+Every component is a copy-paste away, fully editable, and built on battle-tested Radix UI primitives. No bloated dependencies, no version lock-in, no restrictions.
 
 ## Features
 
-- **Copy-paste components** — drop into your project and customize
-- **Accessibility** — built on Radix UI primitives with proper ARIA support
-- **Dark mode** — first-class dark mode via CSS custom properties
-- **TypeScript ready** — works seamlessly with TypeScript
-- **CLI powered** — scaffold any component with `npx snitchui add`
-- **Tree-shakable** — import only what you use
+- **Copy-Paste, Not npm Install** — Full source ownership. Copy component code into your project and customize freely.
+- **Tailwind CSS v4 Native** — Every color, spacing, and radius maps to your existing design system. Zero framework lock-in.
+- **Radix UI Under the Hood** — Keyboard navigation, ARIA attributes, and screen-reader support work out of the box.
+- **Tree-Shakable by Default** — Import only what you use. No global CSS, no runtime overhead.
+- **Dark Mode Included** — Every component ships with light and dark variants. Toggle your HTML class and SnitchUI adapts automatically.
+- **React 19 Ready** — Built with React 19 from the ground up.
+
+## How It Works
+
+```bash
+# 1. Setup your project (React + Vite + Tailwind CSS v4)
+# 2. Install SnitchUI
+npm install snitchui
+
+# 3. Add components via CLI
+npx snitchui@latest add button
+npx snitchui@latest add input
+npx snitchui@latest add select
+```
 
 ## Components
 
@@ -43,62 +62,23 @@ SnitchUI provides copy-paste, reusable UI components for React + Tailwind CSS pr
 | `Textarea` | Multi-line text input with focus and disabled states |
 | `TimePicker` | Time picker for hours, minutes, and seconds |
 
-## Installation
-
-Install the package:
-
-```bash
-npm install snitchui
-```
-
-Then scaffold any component with the CLI:
-
-```bash
-npx snitchui add button
-npx snitchui add label
-npx snitchui add input
-npx snitchui add select
-npx snitchui add checkbox
-npx snitchui add combobox
-npx snitchui add datepicker
-npx snitchui add radiobutton
-npx snitchui add switch
-npx snitchui add textarea
-npx snitchui add timepicker
-```
-
 ## Usage
 
 ```jsx
-import { Button } from 'snitchui'
-import { Label } from 'snitchui'
-import { Input } from 'snitchui'
-import { Select } from 'snitchui'
+import { Button } from './components/ui/button'
+import { Label } from './components/ui/label'
+import { Input } from './components/ui/input'
 
 export function App() {
   return (
     <div className="space-y-4">
-      <Button variant="default" size="md">
-        Click me
-      </Button>
+      <Button>Click me</Button>
+      <Button variant="outline">Cancel</Button>
 
       <div>
         <Label htmlFor="email">Email</Label>
         <Input id="email" type="email" placeholder="you@example.com" />
       </div>
-
-      <Select>
-        <SelectTrigger>
-          <SelectValue placeholder="Choose an option" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectLabel>Options</SelectLabel>
-            <SelectItem value="a">Option A</SelectItem>
-            <SelectItem value="b">Option B</SelectItem>
-          </SelectGroup>
-        </SelectContent>
-      </Select>
     </div>
   )
 }
@@ -106,8 +86,8 @@ export function App() {
 
 ### CLI Options
 
-- `--force` — overwrite existing files
-- `--skip-install` — skip npm install of dependencies
+- `--force` — Overwrite existing files
+- `--skip-install` — Skip npm install of dependencies
 
 ## Design Tokens
 
@@ -115,7 +95,7 @@ SnitchUI uses CSS custom properties for theming, supporting light and dark modes
 
 ## Philosophy
 
-Build once. Reuse everywhere. Minimal API. Maximum flexibility.
+Build once. Reuse everywhere. Minimal API. Maximum flexibility. Stop fighting with heavy dependencies — start building with components you actually own.
 
 ## License
 

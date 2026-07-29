@@ -69,28 +69,50 @@ export function Sidebar({ open, onClose }) {
             Components
           </div>
 
-          {components.map((c) => (
-            <NavLink
-              key={c.id}
-              to={c.path}
-              onClick={onClose}
-              className={({ isActive }) =>
-                cn(
-                  'flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors',
-                  isActive
-                    ? 'bg-accent text-accent-foreground font-medium'
-                    : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
-                )
-              }
-            >
-              <span>{c.name}</span>
-              {c.comingSoon && (
+          {[...components]
+            .filter((c) => !c.comingSoon)
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map((c) => (
+              <NavLink
+                key={c.id}
+                to={c.path}
+                onClick={onClose}
+                className={({ isActive }) =>
+                  cn(
+                    'flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors',
+                    isActive
+                      ? 'bg-accent text-accent-foreground font-medium'
+                      : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                  )
+                }
+              >
+                <span>{c.name}</span>
+              </NavLink>
+            ))}
+
+          {[...components]
+            .filter((c) => c.comingSoon)
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map((c) => (
+              <NavLink
+                key={c.id}
+                to={c.path}
+                onClick={onClose}
+                className={({ isActive }) =>
+                  cn(
+                    'flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors',
+                    isActive
+                      ? 'bg-accent text-accent-foreground font-medium'
+                      : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                  )
+                }
+              >
+                <span>{c.name}</span>
                 <span className="ml-auto text-[10px] text-muted-foreground border border-border rounded px-1.5 py-0.5">
                   Soon
                 </span>
-              )}
-            </NavLink>
-          ))}
+              </NavLink>
+            ))}
         </nav>
       </aside>
     </>
