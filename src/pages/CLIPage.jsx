@@ -8,6 +8,12 @@ const COMMANDS = [
     example: null,
   },
   {
+    name: 'npx snitchui@latest add-template',
+    desc: 'Scaffold a page template with preview and code.',
+    usage: 'npx snitchui@latest add-template signin signup',
+    example: null,
+  },
+  {
     name: 'npx snitchui@latest remove',
     desc: 'Remove a component and its files from your project.',
     usage: 'npx snitchui@latest remove button',
