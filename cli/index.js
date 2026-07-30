@@ -149,7 +149,6 @@ export async function addTemplate(name, options = {}) {
 
   const projectRoot = options.cwd || findProjectRoot()
   const srcDir = path.join(projectRoot, 'src')
-  const capitalizeName = name.charAt(0).toUpperCase() + name.slice(1)
 
   if (!fs.existsSync(srcDir)) {
     log(`\n${RED}No src/ directory found in ${projectRoot}${RESET}`)
@@ -159,9 +158,20 @@ export async function addTemplate(name, options = {}) {
 
   log(`\n${CYAN}▸ Installing ${tmpl.name} template...${RESET}`)
 
-  // Install deps
+  // Install npm deps
   if (!options.skipInstall) {
     installDeps(tmpl.deps, projectRoot)
+  }
+
+  // Install missing UI component deps
+  if (tmpl.uiDeps && tmpl.uiDeps.length > 0) {
+    for (const uiComp of tmpl.uiDeps) {
+      const compPath = path.join(srcDir, 'components', 'ui', uiComp, `${uiComp}.jsx`)
+      if (!fileExists(compPath)) {
+        log(`  ${YELLOW}Installing required component: ${uiComp}${RESET}`)
+        await add(uiComp, { ...options, cwd: projectRoot })
+      }
+    }
   }
 
   // Write template files
@@ -178,82 +188,8 @@ export async function addTemplate(name, options = {}) {
     log(`  ${GREEN}✓ Created ${relative}${RESET}`)
   }
 
-  // Update App.jsx with new route
-  const appPath = path.join(srcDir, 'App.jsx')
-  if (fileExists(appPath)) {
-    updateAppJsx(appPath, name, capitalizeName, options.force)
-  }
-
-  // Update Sidebar.jsx with new nav entry
-  const sidebarPath = path.join(srcDir, 'components', 'layout', 'Sidebar.jsx')
-  if (fileExists(sidebarPath)) {
-    updateSidebar(sidebarPath, name, capitalizeName, options.force)
-  }
-
-  log(`\n${GREEN}Done!${RESET}`)
-}
-
-function updateAppJsx(appPath, name, capitalizeName, force) {
-  const content = fs.readFileSync(appPath, 'utf-8')
-  const importLine = `import { ${capitalizeName}Page } from './pages/${capitalizeName}Page.jsx'`
-  const routeLine = `        <Route path="docs/${name}" element={<${capitalizeName}Page />} />`
-
-  if (content.includes(importLine)) {
-    return
-  }
-
-  // Insert import before ComponentPage import
-  const newContent = content.replace(
-    /(import \{ ComponentPage \} from '.\/pages\/ComponentPage\.jsx')/,
-    `${importLine}\n$1`
-  )
-
-  // Insert route before the dynamic :id route
-  const finalContent = newContent.replace(
-    /(        <Route path="docs\/:id" element=\{<ComponentPage \/\} \/>)/,
-    `${routeLine}\n$1`
-  )
-
-  if (finalContent !== content) {
-    fs.writeFileSync(appPath, finalContent)
-    log(`  ${GREEN}✓ Updated App.jsx${RESET}`)
-  }
-}
-
-function updateSidebar(sidebarPath, name, capitalizeName, force) {
-  const content = fs.readFileSync(sidebarPath, 'utf-8')
-  const pathLower = name.toLowerCase()
-  const navEntry = `                <NavLink
-                  to="/docs/${pathLower}"
-                  onClick={onClose}
-                  className={({ isActive }) =>
-                    cn(
-                      'group flex w-full items-center gap-2.5 rounded-md px-3 py-1.5 text-sm transition-colors',
-                      isActive
-                        ? 'bg-accent text-accent-foreground font-medium'
-                        : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
-                    )
-                  }
-                >
-                  <div className="flex size-6 shrink-0 items-center justify-center rounded border border-border/50 bg-muted/50">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="10 9 12 11 14 9"></polyline></svg>
-                  </div>
-                  <span>${capitalizeName}</span>
-                </NavLink>`
-
-  if (content.includes(`to="/docs/${pathLower}"`)) {
-    return
-  }
-
-  const newContent = content.replace(
-    /(              <\/div>\s+<\/div>\s+<\/CollapsibleSection>)/,
-    `              ${navEntry}\n            </div>\n          </CollapsibleSection>`
-  )
-
-  if (newContent !== content) {
-    fs.writeFileSync(sidebarPath, newContent)
-    log(`  ${GREEN}✓ Updated Sidebar.jsx${RESET}`)
-  }
+  log(`\n${GREEN}Done! Import it:${RESET}`)
+  log(`  import { ${capitalize(name)}Form } from './components/templates/${capitalize(name)}Form'`)
 }
 
 function capitalize(s) {
@@ -263,25 +199,32 @@ function capitalize(s) {
 // CLI main
 const args = process.argv.slice(2)
 const command = args[0]
-const compName = args[1]
 const force = args.includes('--force')
 const skipInstall = args.includes('--skip-install')
 
-if (command === 'add' && compName) {
-  add(compName, { force, skipInstall })
-} else if (command === 'add-template' && compName) {
-  addTemplate(compName, { force, skipInstall })
-} else {
-  log(`\n${CYAN}snitchui CLI${RESET}`)
-  log(`\nUsage:`)
-  log(`  npx snitchui add <component> [options]`)
-  log(`  npx snitchui add-template <template> [options]`)
-  log(`\nOptions:`)
-  log(`  --force         Overwrite existing files`)
-  log(`  --skip-install  Skip npm install`)
-  log(`\nExamples:`)
-  log(`  npx snitchui add button`)
-  log(`  npx snitchui add button --force`)
-  log(`  npx snitchui add-template signin`)
-  log(`  npx snitchui add-template signup`)
-}
+const names = args.slice(1).filter((a) => !a.startsWith('--'))
+
+;(async () => {
+  if (command === 'add' && names.length) {
+    for (const name of names) {
+      await add(name, { force, skipInstall })
+    }
+  } else if (command === 'add-template' && names.length) {
+    for (const name of names) {
+      await addTemplate(name, { force, skipInstall })
+    }
+  } else {
+    log(`\n${CYAN}snitchui CLI${RESET}`)
+    log(`\nUsage:`)
+    log(`  npx snitchui add <component...> [options]`)
+    log(`  npx snitchui add-template <template...> [options]`)
+    log(`\nOptions:`)
+    log(`  --force         Overwrite existing files`)
+    log(`  --skip-install  Skip npm install`)
+    log(`\nExamples:`)
+    log(`  npx snitchui add button input select card`)
+    log(`  npx snitchui add button --force`)
+    log(`  npx snitchui add-template signin`)
+    log(`  npx snitchui add-template signup`)
+  }
+})()

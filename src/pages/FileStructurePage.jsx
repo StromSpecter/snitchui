@@ -17,9 +17,10 @@ const componentTree = `src/
         └── ...                # More components`
 
 const templateTree = `src/
-└── pages/
-    ├── SigninPage.jsx   # Signin template (preview + code)
-    └── SignupPage.jsx   # Signup template (preview + code)`
+└── components/
+    └── templates/
+        ├── SigninForm.jsx   # Signin form component
+        └── SignupForm.jsx   # Signup form component`
 
 export function FileStructurePage() {
   return (
@@ -38,7 +39,8 @@ export function FileStructurePage() {
           Running <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">npx snitchui@latest add button</code> creates files inside
           <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono"> src/components/ui/{'{name}'}/</code>. Each component gets its own
           folder with the component file and a barrel <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">index.js</code>
-          for IDE auto-import.
+          for IDE auto-import. You can add multiple at once:
+          <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono"> npx snitchui@latest add button input select card</code>.
         </p>
         <CodeBlock code={componentTree} filename="src/" />
       </section>
@@ -47,30 +49,14 @@ export function FileStructurePage() {
         <h2 className="mb-4 text-xl font-semibold tracking-tight">Templates</h2>
         <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
           Running <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">npx snitchui@latest add-template signin</code> creates a
-          page file inside <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">src/pages/</code>. The CLI also patches
-          <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono"> App.jsx</code> (adds route) and <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">Sidebar.jsx</code> (adds nav entry).
+          reusable form component inside <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">src/components/templates/</code>.
+          Missing UI components (<code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">button</code>,
+          <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono"> input</code>,
+          <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono"> label</code>,
+          <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono"> card</code>) are auto-installed. No route or sidebar
+          updates — just import and use.
         </p>
         <CodeBlock code={templateTree} filename="src/" />
-      </section>
-
-      <section className="mb-12">
-        <h2 className="mb-4 text-xl font-semibold tracking-tight">Auto-updated files</h2>
-
-        <div className="rounded-xl border border-border/50 bg-card/70 backdrop-blur-xl p-6">
-          <h3 className="mb-3 text-sm font-semibold">App.jsx</h3>
-          <p className="text-sm text-muted-foreground mb-3">
-            Route added by <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">add-template</code>:
-          </p>
-          <CodeBlock code={`<Route path="docs/signin" element={<SigninPage />} />`} filename="src/App.jsx" />
-        </div>
-
-        <div className="rounded-xl border border-border/50 bg-card/70 backdrop-blur-xl p-6 mt-4">
-          <h3 className="mb-3 text-sm font-semibold">Sidebar.jsx</h3>
-          <p className="text-sm text-muted-foreground mb-3">
-            Navigation entry added by <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">add-template</code>:
-          </p>
-          <CodeBlock code={`<NavLink to="/docs/signin" />`} filename="src/components/layout/Sidebar.jsx" />
-        </div>
       </section>
     </div>
   )
