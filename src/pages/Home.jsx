@@ -72,13 +72,13 @@ function Hero() {
         </p>
 
         <div className="mt-10 flex flex-wrap justify-center gap-3">
-          <Link
-            to="/docs/installation"
-            className="inline-flex h-11 items-center gap-2 rounded-md bg-primary px-6 text-sm font-medium text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors"
-          >
-            Get Started
-            <ArrowRight className="size-4" />
-          </Link>
+            <Link
+              to="/docs/getting-started"
+              className="inline-flex h-11 items-center gap-2 rounded-md bg-primary px-6 text-sm font-medium text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors"
+            >
+              Get Started
+              <ArrowRight className="size-4" />
+            </Link>
           <Link
             to="/docs/button"
             className="inline-flex h-11 items-center gap-2 rounded-md border border-input bg-background px-6 text-sm font-medium shadow-sm hover:bg-accent hover:text-accent-foreground transition-colors"
@@ -279,7 +279,7 @@ export function Home() {
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Link
-              to="/docs/installation"
+              to="/docs/getting-started"
               className="inline-flex h-11 items-center gap-2 rounded-md bg-primary px-6 text-sm font-medium text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors"
             >
               Get Started Now

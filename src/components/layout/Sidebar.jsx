@@ -51,6 +51,48 @@ export function Sidebar({ open, onClose }) {
             Introduction
           </NavLink>
           <NavLink
+            to="/docs/getting-started"
+            onClick={onClose}
+            className={({ isActive }) =>
+              cn(
+                'flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors',
+                isActive
+                  ? 'bg-accent text-accent-foreground font-medium'
+                  : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+              )
+            }
+          >
+            Quick Start
+          </NavLink>
+          <NavLink
+            to="/docs/cli"
+            onClick={onClose}
+            className={({ isActive }) =>
+              cn(
+                'flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors',
+                isActive
+                  ? 'bg-accent text-accent-foreground font-medium'
+                  : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+              )
+            }
+          >
+            CLI
+          </NavLink>
+          <NavLink
+            to="/docs/theming"
+            onClick={onClose}
+            className={({ isActive }) =>
+              cn(
+                'flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors',
+                isActive
+                  ? 'bg-accent text-accent-foreground font-medium'
+                  : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+              )
+            }
+          >
+            Theming
+          </NavLink>
+          <NavLink
             to="/docs/installation"
             onClick={onClose}
             className={({ isActive }) =>
