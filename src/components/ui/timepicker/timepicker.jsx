@@ -124,7 +124,7 @@ const TimePicker = forwardRef(
         />
 
         {open && (
-          <div className="absolute z-10 mt-2 w-72 rounded-xl border border-border bg-background p-4 shadow-xl animate-in fade-in zoom-in-95 duration-150">
+          <div className="absolute z-10 mt-2 w-72 rounded-xl border border-border/50 bg-background/80 backdrop-blur-xl p-4 shadow-xl animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between mb-4">
               <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                 Select Time
@@ -243,7 +243,7 @@ const TimePicker = forwardRef(
               </div>
             )}
 
-            <div className="flex items-center justify-end gap-2 border-t border-border pt-3">
+            <div className="flex items-center justify-end gap-2 border-t border-border/50 pt-3">
               <button
                 type="button"
                 className="h-9 px-4 rounded-md text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"

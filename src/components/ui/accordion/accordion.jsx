@@ -22,7 +22,7 @@ function Accordion({ type = 'single', defaultValue, children, className, ...prop
 
   return (
     <AccordionContext.Provider value={{ openValues, toggleItem, type }}>
-      <div className={cn('divide-y divide-border rounded-lg border border-border', className)} {...props}>
+      <div className={cn('divide-y divide-border/50 rounded-lg border border-border/50 bg-card/70 backdrop-blur-xl', className)} {...props}>
         {children}
       </div>
     </AccordionContext.Provider>

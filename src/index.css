@@ -14,10 +14,10 @@
   --color-border: #e4e4e7;
   --color-input: #e4e4e7;
   --color-ring: #18181b;
-  --color-background: #ffffff;
-  --color-foreground: #09090b;
-  --color-card: #ffffff;
-  --color-card-foreground: #09090b;
+  --color-background: oklch(1 0 0);
+  --color-foreground: oklch(0.141 0.005 285.823);
+  --color-card: oklch(1 0 0);
+  --color-card-foreground: oklch(0.141 0.005 285.823);
 
   --radius-sm: 0.375rem;
   --radius-md: 0.5rem;
@@ -58,10 +58,10 @@
   --color-border: #27272a;
   --color-input: #27272a;
   --color-ring: #d4d4d8;
-  --color-background: #09090b;
-  --color-foreground: #fafafa;
-  --color-card: #09090b;
-  --color-card-foreground: #fafafa;
+  --color-background: oklch(0.141 0.005 285.823);
+  --color-foreground: oklch(0.985 0 0);
+  --color-card: oklch(0.141 0.005 285.823);
+  --color-card-foreground: oklch(0.985 0 0);
 }
 
 body {
@@ -69,6 +69,17 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--color-background);
   color: var(--color-foreground);
+  background-color: var(--color-background);
+  background-image:
+    radial-gradient(circle, color-mix(in srgb, var(--color-foreground) 20%, transparent) 1.5px, transparent 1.5px),
+    radial-gradient(circle, color-mix(in srgb, var(--color-foreground) 20%, transparent) 1.5px, transparent 1.5px);
+  background-size: 28px 28px;
+  background-position: 0 0, 14px 14px;
+}
+
+.dark body {
+  background-image:
+    radial-gradient(circle, color-mix(in srgb, var(--color-foreground) 15%, transparent) 1.5px, transparent 1.5px),
+    radial-gradient(circle, color-mix(in srgb, var(--color-foreground) 15%, transparent) 1.5px, transparent 1.5px);
 }

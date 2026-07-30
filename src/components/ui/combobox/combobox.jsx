@@ -92,7 +92,7 @@ const Combobox = forwardRef(
         </div>
 
         {open && (
-          <div className="absolute z-10 mt-1 w-full rounded-md border border-border bg-background shadow-md">
+          <div className="absolute z-10 mt-1 w-full rounded-md border border-border/50 bg-background/80 backdrop-blur-xl shadow-md">
             <div className="p-2">
               <input
                 type="text"

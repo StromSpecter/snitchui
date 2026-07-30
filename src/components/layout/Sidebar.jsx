@@ -15,7 +15,7 @@ export function Sidebar({ open, onClose }) {
 
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-50 w-64 border-r border-border bg-background transform transition-transform duration-200 lg:translate-x-0 overflow-y-auto',
+          'fixed inset-y-0 left-0 z-50 w-64 border-r border-border/50 bg-background/95 transform transition-transform duration-200 lg:translate-x-0 overflow-y-auto',
           open ? 'translate-x-0' : '-translate-x-full'
         )}
       >

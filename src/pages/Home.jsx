@@ -49,11 +49,11 @@ const steps = [
 
 function Hero() {
   return (
-    <section className="relative overflow-hidden rounded-2xl border border-border bg-gradient-to-b from-background to-muted/30 px-6 py-16 sm:py-24">
-      <div className="pointer-events-none absolute -top-24 left-1/2 size-96 -translate-x-1/2 rounded-full bg-primary/[0.03] blur-3xl" />
+    <section className="relative overflow-hidden rounded-2xl border border-border/50 bg-gradient-to-b from-background/50 to-background/30 backdrop-blur-xl px-6 py-16 sm:py-24">
+      <div className="pointer-events-none absolute -top-24 left-1/2 size-96 -translate-x-1/2 rounded-full bg-gradient-to-r from-primary/10 to-accent/10 blur-3xl" />
 
       <div className="relative mx-auto max-w-4xl text-center">
-        <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background/60 px-4 py-1.5 text-xs font-medium text-muted-foreground backdrop-blur-sm mb-8">
+        <div className="inline-flex items-center gap-2 rounded-full border border-border/50 bg-background/40 px-4 py-1.5 text-xs font-medium text-muted-foreground backdrop-blur-md mb-8">
           <span className="size-1.5 rounded-full bg-primary" />
           Open source UI library for React &amp; Tailwind CSS
         </div>
@@ -87,7 +87,7 @@ function Hero() {
           </Link>
         </div>
 
-        <div className="mt-12 grid grid-cols-3 divide-x divide-border rounded-xl border border-border bg-background/40 backdrop-blur-sm">
+        <div className="mt-12 grid grid-cols-3 divide-x divide-border/50 rounded-xl border border-border/50 bg-background/30 backdrop-blur-xl">
           {stats.map((s) => (
             <div key={s.label} className="py-4 text-center">
               <div className="text-lg font-bold tracking-tight">{s.value}</div>
@@ -124,9 +124,9 @@ function WhySnitchUI() {
           return (
             <div
               key={b.title}
-              className="group rounded-xl border border-border p-5 hover:border-ring hover:shadow-sm transition-all"
+              className="group rounded-xl border border-border/50 bg-gradient-to-br from-card/50 to-card/30 p-5 hover:border-ring/50 hover:shadow-lg backdrop-blur-xl transition-all"
             >
-              <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <div className="flex size-10 items-center justify-center rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 text-primary backdrop-blur-sm">
                 <Icon className="size-5" />
               </div>
               <h3 className="mt-4 font-semibold">{b.title}</h3>
@@ -153,8 +153,8 @@ function HowItWorks() {
 
       <div className="mt-10 grid gap-6 sm:grid-cols-3">
         {steps.map((s) => (
-          <div key={s.step} className="relative text-center">
-            <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-primary/10 text-primary text-lg font-bold">
+          <div key={s.step} className="relative text-center rounded-xl border border-border/50 bg-gradient-to-b from-card/50 to-card/30 p-6 backdrop-blur-xl">
+            <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-accent/20 text-primary text-lg font-bold backdrop-blur-sm">
               {s.step}
             </div>
             <h3 className="mt-4 font-semibold">{s.title}</h3>
@@ -164,7 +164,7 @@ function HowItWorks() {
       </div>
 
       <div className="mt-10 space-y-3">
-        <div className="rounded-xl border border-border bg-muted/30 px-6 py-4">
+        <div className="rounded-xl border border-border/50 bg-gradient-to-r from-muted/30 to-muted/10 backdrop-blur-xl px-6 py-4">
           <div className="flex items-center gap-3 text-sm">
             <Terminal className="size-4 text-muted-foreground shrink-0" />
             <code className="text-foreground font-mono text-xs sm:text-sm">
@@ -175,7 +175,7 @@ function HowItWorks() {
             </span>
           </div>
         </div>
-        <div className="rounded-xl border border-border bg-muted/30 px-6 py-4">
+        <div className="rounded-xl border border-border/50 bg-gradient-to-r from-muted/30 to-muted/10 backdrop-blur-xl px-6 py-4">
           <div className="flex items-center gap-3 text-sm">
             <Terminal className="size-4 text-muted-foreground shrink-0" />
             <code className="text-foreground font-mono text-xs sm:text-sm">
@@ -211,10 +211,10 @@ function ComponentGrid() {
           <Link
             key={c.id}
             to={c.path}
-            className="group rounded-xl border border-border p-5 hover:border-ring hover:shadow-sm transition-all"
+            className="group rounded-xl border border-border/50 bg-gradient-to-br from-card/50 to-card/30 p-5 hover:border-ring/50 hover:shadow-lg backdrop-blur-xl transition-all"
           >
             <div className="flex items-center gap-2">
-              <span className="flex size-8 items-center justify-center rounded-md bg-primary/10 text-primary text-xs font-bold">
+              <span className="flex size-8 items-center justify-center rounded-md bg-gradient-to-br from-primary/20 to-accent/20 text-primary text-xs font-bold backdrop-blur-sm">
                 {c.name.charAt(0)}
               </span>
               <h3 className="font-semibold group-hover:text-primary transition-colors">
@@ -237,10 +237,10 @@ function ComponentGrid() {
             {planned.map((c) => (
               <div
                 key={c.id}
-                className="rounded-xl border border-border p-5 opacity-60"
+                className="rounded-xl border border-border/50 bg-gradient-to-br from-card/30 to-card/10 backdrop-blur-xl p-5 opacity-60"
               >
                 <div className="flex items-center gap-2">
-                  <span className="flex size-8 items-center justify-center rounded-md bg-muted text-muted-foreground text-xs font-bold">
+                  <span className="flex size-8 items-center justify-center rounded-md bg-muted/50 text-muted-foreground text-xs font-bold backdrop-blur-sm">
                     {c.name.charAt(0)}
                   </span>
                   <h3 className="font-semibold">{c.name}</h3>
@@ -248,7 +248,7 @@ function ComponentGrid() {
                 <p className="mt-2 text-sm text-muted-foreground">
                   {c.description}
                 </p>
-                <span className="mt-3 inline-block text-xs font-medium text-muted-foreground border border-border rounded-full px-3 py-0.5">
+                <span className="mt-3 inline-block text-xs font-medium text-muted-foreground border border-border/50 rounded-full px-3 py-0.5 backdrop-blur-sm">
                   Soon
                 </span>
               </div>
@@ -269,7 +269,7 @@ export function Home() {
       <ComponentGrid />
 
       <section className="mt-20 mb-8">
-        <div className="rounded-2xl border border-border bg-gradient-to-br from-primary/5 to-accent/5 p-8 sm:p-12 text-center">
+        <div className="rounded-2xl border border-border/50 bg-gradient-to-br from-primary/10 via-card/50 to-accent/10 backdrop-blur-xl p-8 sm:p-12 text-center">
           <h2 className="text-3xl font-bold tracking-tight">
             Ready to build?
           </h2>

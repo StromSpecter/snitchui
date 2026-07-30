@@ -56,7 +56,7 @@ const DropdownContent = forwardRef(({ className, align = 'start', children, ...p
     <div
       ref={ref}
       className={cn(
-        'absolute z-50 min-w-[8rem] overflow-hidden rounded-md border border-border bg-background p-1 shadow-md',
+        'absolute z-50 min-w-[8rem] overflow-hidden rounded-md border border-border/50 bg-background/80 backdrop-blur-xl p-1 shadow-md',
         'animate-in fade-in-0 zoom-in-95 duration-150',
         align === 'end' ? 'right-0' : 'left-0',
         className

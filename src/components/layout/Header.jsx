@@ -66,7 +66,7 @@ function MobileSearchModal({ open, onClose }) {
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md rounded-lg border border-border bg-background shadow-xl"
+        className="w-full max-w-md rounded-lg border border-border/50 bg-background/80 backdrop-blur-xl shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center gap-2 border-b border-border px-4 py-3">
@@ -132,7 +132,7 @@ export function Header({ onMenuClick }) {
   const [searchOpen, setSearchOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 z-30 border-b border-border bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-30 border-b border-border/50 bg-background/60 backdrop-blur-2xl supports-[backdrop-filter]:bg-background/40">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-4 px-6">
         <Link to="/" className="text-lg font-bold tracking-tight block md:hidden">
           SnitchUI
@@ -259,7 +259,7 @@ function DesktopSearch() {
       </div>
 
       {open && results.length > 0 && (
-        <div className="absolute top-full left-0 right-0 mt-1 z-50 rounded-lg border border-border bg-background shadow-lg">
+        <div className="absolute top-full left-0 right-0 mt-1 z-50 rounded-lg border border-border/50 bg-background/80 backdrop-blur-xl shadow-lg">
           <ul className="py-1">
             {results.map((c) => (
               <li key={c.id}>
@@ -277,7 +277,7 @@ function DesktopSearch() {
       )}
 
       {open && query && results.length === 0 && (
-        <div className="absolute top-full left-0 right-0 mt-1 z-50 rounded-lg border border-border bg-background px-4 py-2 text-sm text-muted-foreground shadow-lg">
+        <div className="absolute top-full left-0 right-0 mt-1 z-50 rounded-lg border border-border/50 bg-background/80 backdrop-blur-xl px-4 py-2 text-sm text-muted-foreground shadow-lg">
           No results found
         </div>
       )}

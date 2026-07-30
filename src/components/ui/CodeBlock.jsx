@@ -5,9 +5,9 @@ export function CodeBlock({ code, filename }) {
   const { copiedKey, copy } = useClipboard()
 
   return (
-    <div className="rounded-lg border border-border overflow-hidden">
+    <div className="rounded-lg border border-border/50 bg-card/70 backdrop-blur-xl overflow-hidden">
       {filename && (
-        <div className="flex items-center justify-between bg-muted px-4 py-2.5 border-b border-border">
+        <div className="flex items-center justify-between bg-muted/50 px-4 py-2.5 border-b border-border/50 backdrop-blur-sm">
           <span className="text-sm font-mono">{filename}</span>
           <div className="flex items-center gap-1">
             <button

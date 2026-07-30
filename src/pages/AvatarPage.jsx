@@ -16,7 +16,7 @@ export function AvatarPage() {
 
       <section className="mb-12">
         <h2 className="mb-4 text-xl font-semibold tracking-tight">Preview</h2>
-        <div className="rounded-lg border border-border p-8">
+        <div className="rounded-lg border border-border/50 bg-card/70 backdrop-blur-xl p-8">
           <AvatarDemo />
         </div>
       </section>
@@ -26,8 +26,8 @@ export function AvatarPage() {
         <p className="mb-4 text-sm text-muted-foreground">
           First install the package: <code className="text-xs bg-muted px-1.5 py-0.5 rounded">npm install snitchui</code>. Then scaffold the component with the CLI below.
         </p>
-        <div className="rounded-lg border border-border overflow-hidden">
-          <div className="flex items-center justify-between bg-muted px-4 py-2.5 border-b border-border">
+        <div className="rounded-lg border border-border/50 bg-card/70 backdrop-blur-xl overflow-hidden">
+          <div className="flex items-center justify-between bg-muted px-4 py-2.5 border-b border-border/50">
             <span className="text-sm font-medium">CLI</span>
             <CopyButton text={meta.installCmd} label="install-avatar" />
           </div>
@@ -60,10 +60,10 @@ export function Example() {
 
       <section className="mb-12">
         <h2 className="mb-4 text-xl font-semibold tracking-tight">Props</h2>
-        <div className="rounded-lg border border-border overflow-hidden">
+        <div className="rounded-lg border border-border/50 bg-card/70 backdrop-blur-xl overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border bg-muted">
+              <tr className="border-b border-border/50 bg-muted/50 backdrop-blur-sm">
                 <th className="px-4 py-3 text-left font-medium">Prop</th>
                 <th className="px-4 py-3 text-left font-medium">Type</th>
                 <th className="px-4 py-3 text-left font-medium">Default</th>
@@ -72,7 +72,7 @@ export function Example() {
             </thead>
             <tbody>
               {meta.props.map((p, i) => (
-                <tr key={p.prop} className={i < meta.props.length - 1 ? 'border-b border-border' : ''}>
+                <tr key={p.prop} className={i < meta.props.length - 1 ? 'border-b border-border/50' : ''}>
                   <td className="px-4 py-3 font-mono text-xs">{p.prop}</td>
                   <td className="px-4 py-3 text-muted-foreground">{p.type}</td>
                   <td className="px-4 py-3 text-muted-foreground">{p.default}</td>

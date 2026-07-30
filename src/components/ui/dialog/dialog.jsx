@@ -67,7 +67,7 @@ const DialogContent = forwardRef(({ className, children, ...props }, ref) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+        className="fixed inset-0 bg-black/50 backdrop-blur-md"
         onClick={() => setOpen(false)}
       />
       <div
@@ -75,7 +75,7 @@ const DialogContent = forwardRef(({ className, children, ...props }, ref) => {
         role="dialog"
         aria-modal="true"
         className={cn(
-          'relative z-50 w-full max-w-lg rounded-xl border border-border bg-background shadow-lg p-6 mx-4',
+          'relative z-50 w-full max-w-lg rounded-xl border border-border/50 bg-background/80 backdrop-blur-2xl shadow-lg p-6 mx-4',
           'animate-in fade-in-0 zoom-in-95 duration-200',
           className
         )}

@@ -129,7 +129,7 @@ const DatePicker = forwardRef(
         />
 
         {showCalendar && (
-          <div className="absolute z-10 mt-2 w-72 rounded-xl border border-border bg-background p-4 shadow-xl animate-in fade-in zoom-in-95 duration-150">
+          <div className="absolute z-10 mt-2 w-72 rounded-xl border border-border/50 bg-background/80 backdrop-blur-xl p-4 shadow-xl animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between mb-4">
               <button
                 type="button"

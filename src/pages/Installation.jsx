@@ -110,10 +110,10 @@ export function Installation() {
         <h2 className="mb-4 text-xl font-semibold tracking-tight">
           Required Tech Stack
         </h2>
-        <div className="rounded-lg border border-border overflow-hidden">
+        <div className="rounded-lg border border-border/50 bg-card/70 backdrop-blur-xl overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border bg-muted">
+              <tr className="border-b border-border/50 bg-muted/50 backdrop-blur-sm">
                 <th className="px-4 py-3 text-left font-medium">Package</th>
                 <th className="px-4 py-3 text-left font-medium">Version</th>
                 <th className="px-4 py-3 text-left font-medium">Purpose</th>
@@ -121,9 +121,9 @@ export function Installation() {
             </thead>
             <tbody>
               {REQUIRED.map((pkg, i) => (
-                <tr
-                  key={pkg.name}
-                  className={i < REQUIRED.length - 1 ? 'border-b border-border' : ''}
+                  <tr
+                    key={pkg.name}
+                    className={i < REQUIRED.length - 1 ? 'border-b border-border/50' : ''}
                 >
                   <td className="px-4 py-3 font-mono text-xs">{pkg.name}</td>
                   <td className="px-4 py-3 text-muted-foreground">{pkg.version}</td>

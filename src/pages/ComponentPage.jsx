@@ -49,7 +49,7 @@ export function ComponentPage() {
   if (!meta) {
     return (
       <div className="mx-auto max-w-4xl px-6 py-10">
-        <div className="rounded-lg border border-border p-12 text-center">
+        <div className="rounded-lg border border-border/50 bg-card/70 backdrop-blur-xl p-12 text-center">
           <h2 className="text-2xl font-semibold tracking-tight">
             Component not found
           </h2>
