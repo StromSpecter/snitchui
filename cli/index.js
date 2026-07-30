@@ -3,7 +3,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { execSync } from 'node:child_process'
-import { getComponent } from './templates.js'
+import { getComponent, components } from './templates.js'
 
 const RESET = '\x1b[0m'
 const CYAN = '\x1b[36m'
@@ -71,7 +71,7 @@ export async function add(name, options = {}) {
   const comp = getComponent(name)
   if (!comp) {
     log(`\n${RED}Unknown component: ${name}${RESET}`)
-    const available = Object.keys(require('./templates.js').components).join(', ')
+    const available = Object.keys(components).join(', ')
     log(`Available: ${available}`)
     return
   }
@@ -117,8 +117,25 @@ export async function add(name, options = {}) {
     }
   }
 
+  // Write index.js barrel file for IDE auto-import
+  const indexDest = path.join(srcDir, `components/ui/${name}/index.js`)
+  const indexRelative = path.relative(projectRoot, indexDest)
+  const namedExport = capitalize(name)
+
+  // Collect all named exports from component files
+  const exportNames = [namedExport]
+  if (name === 'button') exportNames.push('buttonVariants')
+  if (name === 'badge') exportNames.push('badgeVariants')
+
+  if (!fileExists(indexDest) || options.force) {
+    const exportList = exportNames.join(', ')
+    const indexContent = `export { ${exportList} } from './${name}.jsx'\n`
+    writeFile(indexDest, indexContent)
+    log(`  ${GREEN}✓ Created ${indexRelative}${RESET}`)
+  }
+
   log(`\n${GREEN}Done! Import it:${RESET}`)
-  log(`  import { ${capitalize(name)} } from '@/components/ui/${name}'`)
+  log(`  import { ${namedExport} } from './components/ui/${name}'`)
 }
 
 function capitalize(s) {
