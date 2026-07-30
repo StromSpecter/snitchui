@@ -126,6 +126,16 @@ export async function add(name, options = {}) {
   const exportNames = [namedExport]
   if (name === 'button') exportNames.push('buttonVariants')
   if (name === 'badge') exportNames.push('badgeVariants')
+  if (name === 'card') exportNames.push('CardHeader', 'CardFooter', 'CardTitle', 'CardDescription', 'CardContent')
+  if (name === 'select') exportNames.push('SelectGroup', 'SelectValue', 'SelectTrigger', 'SelectContent', 'SelectItem', 'SelectLabel', 'SelectSeparator')
+  if (name === 'tabs') exportNames.push('TabsList', 'TabsTrigger', 'TabsContent')
+  if (name === 'accordion') exportNames.push('AccordionItem', 'AccordionTrigger', 'AccordionContent')
+  if (name === 'dialog') exportNames.push('DialogTrigger', 'DialogClose', 'DialogContent', 'DialogHeader', 'DialogFooter', 'DialogTitle', 'DialogDescription')
+  if (name === 'dropdown') exportNames.push('DropdownTrigger', 'DropdownContent', 'DropdownItem', 'DropdownSeparator', 'DropdownLabel')
+  if (name === 'avatar') exportNames.push('AvatarImage', 'AvatarFallback')
+  if (name === 'alert') exportNames.push('AlertTitle', 'AlertDescription')
+  if (name === 'radiobutton') exportNames.splice(0, 1, 'RadioButtonGroup', 'RadioButtonItem', 'RadioButtonLabel')
+  if (name === 'combobox') exportNames.push('ComboboxItem')
 
   if (!fileExists(indexDest) || options.force) {
     const exportList = exportNames.join(', ')
