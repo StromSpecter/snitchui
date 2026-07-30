@@ -44,6 +44,10 @@ npm install snitchui
 npx snitchui@latest add button
 npx snitchui@latest add input
 npx snitchui@latest add select
+
+# 4. Scaffold page templates
+npx snitchui@latest add-template signin
+npx snitchui@latest add-template signup
 ```
 
 ## Components
@@ -70,6 +74,22 @@ npx snitchui@latest add select
 | `Avatar` | User avatar with image fallback and delay |
 | `Alert` | Contextual message with icon support and variants |
 
+## Templates
+
+Pre-built page templates scaffolded into `src/pages/`. CLI auto-updates routes and sidebar navigation.
+
+| Template | Description |
+|----------|-------------|
+| `Signin` | Centered card form with email/password fields and sign-up link |
+| `Signup` | Centered card form with name/email/password and sign-in link |
+
+```bash
+npx snitchui@latest add-template signin
+npx snitchui@latest add-template signup
+```
+
+Every template includes a live preview and the full source code with a copy button.
+
 ## Usage
 
 ```jsx
@@ -94,8 +114,17 @@ export function App() {
 
 ### CLI Options
 
-- `--force` — Overwrite existing files
-- `--skip-install` — Skip npm install of dependencies
+```bash
+# Add components
+npx snitchui@latest add <component...>
+
+# Add page templates (auto-updates routes + sidebar)
+npx snitchui@latest add-template <template...>
+
+# Options
+--force          Overwrite existing files
+--skip-install   Skip npm install of dependencies
+```
 
 ## Design Tokens
 
