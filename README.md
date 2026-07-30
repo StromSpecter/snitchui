@@ -1,27 +1,14 @@
 # SnitchUI
 
-<p align="center">
-  <img src="https://github.com/StromSpecter/snitchui/raw/main/src/assets/snitchui.jpeg" alt="SnitchUI" width="600" />
-</p>
+![SnitchUI](https://github.com/StromSpecter/snitchui/raw/main/src/assets/snitchui.jpeg)
 
-<p align="center">
-  Build beautiful UI without the bloat.<br />
-  Copy-paste components built on <strong>Radix UI</strong> + <strong>Tailwind CSS v4</strong>.<br />
-  You own every line of code — install nothing, commit everything, customize anything.
-</p>
+> Build beautiful UI without the bloat. Copy-paste components built on **Radix UI** + **Tailwind CSS v4**. You own every line of code — install nothing, commit everything, customize anything.
 
-<p align="center">
-  <a href="https://www.npmjs.com/package/snitchui"><img src="https://img.shields.io/npm/v/snitchui.svg" alt="npm version"></a>
-  <a href="https://www.npmjs.com/package/snitchui"><img src="https://img.shields.io/npm/dw/snitchui.svg" alt="npm downloads"></a>
-  <a href="https://www.npmjs.com/package/snitchui"><img src="https://img.shields.io/npm/l/snitchui.svg" alt="license"></a>
-</p>
+[![npm version](https://img.shields.io/npm/v/snitchui.svg)](https://www.npmjs.com/package/snitchui)
+[![npm downloads](https://img.shields.io/npm/dw/snitchui.svg)](https://www.npmjs.com/package/snitchui)
+[![license](https://img.shields.io/npm/l/snitchui.svg)](https://www.npmjs.com/package/snitchui)
 
-<p align="center">
-  🌐 <strong>Live Website:</strong><br />
-  <a href="https://snitchui.vercel.app" target="_blank">
-    https://snitchui.vercel.app
-  </a>
-</p>
+🌐 **Live Website:** [https://snitchui.vercel.app](https://snitchui.vercel.app)
 
 ---
 
