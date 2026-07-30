@@ -71,7 +71,8 @@ export async function add(name, options = {}) {
   const comp = getComponent(name)
   if (!comp) {
     log(`\n${RED}Unknown component: ${name}${RESET}`)
-    log(`Available: button, label, input, select`)
+    const available = Object.keys(require('./templates.js').components).join(', ')
+    log(`Available: ${available}`)
     return
   }
 
