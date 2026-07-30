@@ -71,15 +71,4 @@ body {
   -moz-osx-font-smoothing: grayscale;
   color: var(--color-foreground);
   background-color: var(--color-background);
-  background-image:
-    radial-gradient(circle, color-mix(in srgb, var(--color-foreground) 20%, transparent) 1.5px, transparent 1.5px),
-    radial-gradient(circle, color-mix(in srgb, var(--color-foreground) 20%, transparent) 1.5px, transparent 1.5px);
-  background-size: 28px 28px;
-  background-position: 0 0, 14px 14px;
-}
-
-.dark body {
-  background-image:
-    radial-gradient(circle, color-mix(in srgb, var(--color-foreground) 15%, transparent) 1.5px, transparent 1.5px),
-    radial-gradient(circle, color-mix(in srgb, var(--color-foreground) 15%, transparent) 1.5px, transparent 1.5px);
 }
