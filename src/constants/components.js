@@ -654,7 +654,691 @@ TimePicker.displayName = 'TimePicker'
 
 export { TimePicker }`
 
-export const UI_SOURCES = { CHECKBOX_SOURCE, COMBOBOX_SOURCE, DATEPICKER_SOURCE, RADIOBUTTON_SOURCE, SWITCH_SOURCE, TEXTAREA_SOURCE, TIMEPICKER_SOURCE }
+export const CARD_SOURCE = `import { forwardRef } from 'react'
+import { cn } from '../../../lib/utils.js'
+
+const Card = forwardRef(({ className, ...props }, ref) => {
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        'rounded-xl border border-border bg-card text-card-foreground shadow-sm',
+        className
+      )}
+      {...props}
+    />
+  )
+})
+Card.displayName = 'Card'
+
+const CardHeader = forwardRef(({ className, ...props }, ref) => {
+  return (
+    <div
+      ref={ref}
+      className={cn('flex flex-col space-y-1.5 p-6', className)}
+      {...props}
+    />
+  )
+})
+CardHeader.displayName = 'CardHeader'
+
+const CardTitle = forwardRef(({ className, ...props }, ref) => {
+  return (
+    <h3
+      ref={ref}
+      className={cn('text-lg font-semibold leading-none tracking-tight', className)}
+      {...props}
+    />
+  )
+})
+CardTitle.displayName = 'CardTitle'
+
+const CardDescription = forwardRef(({ className, ...props }, ref) => {
+  return (
+    <p
+      ref={ref}
+      className={cn('text-sm text-muted-foreground', className)}
+      {...props}
+    />
+  )
+})
+CardDescription.displayName = 'CardDescription'
+
+const CardContent = forwardRef(({ className, ...props }, ref) => {
+  return (
+    <div ref={ref} className={cn('p-6 pt-0', className)} {...props} />
+  )
+})
+CardContent.displayName = 'CardContent'
+
+const CardFooter = forwardRef(({ className, ...props }, ref) => {
+  return (
+    <div
+      ref={ref}
+      className={cn('flex items-center p-6 pt-0', className)}
+      {...props}
+    />
+  )
+})
+CardFooter.displayName = 'CardFooter'
+
+export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }`
+
+export const BADGE_SOURCE = `import { forwardRef } from 'react'
+import { cva } from 'class-variance-authority'
+import { cn } from '../../../lib/utils.js'
+
+const badgeVariants = cva(
+  'inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
+  {
+    variants: {
+      variant: {
+        default: 'border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80',
+        secondary: 'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80',
+        outline: 'text-foreground',
+        destructive: 'border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80',
+        success: 'border-transparent bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400',
+        warning: 'border-transparent bg-amber-500/10 text-amber-600 dark:bg-amber-500/15 dark:text-amber-400',
+      },
+    },
+    defaultVariants: {
+      variant: 'default',
+    },
+  }
+)
+
+const Badge = forwardRef(({ className, variant, ...props }, ref) => {
+  return (
+    <div
+      ref={ref}
+      className={cn(badgeVariants({ variant }), className)}
+      {...props}
+    />
+  )
+})
+Badge.displayName = 'Badge'
+
+export { Badge, badgeVariants }`
+
+export const DIALOG_SOURCE = `import { forwardRef, createContext, useContext, useState, useEffect, useCallback } from 'react'
+import { X } from 'lucide-react'
+import { cn } from '../../../lib/utils.js'
+
+const DialogContext = createContext()
+
+function Dialog({ open: controlledOpen, onOpenChange, children }) {
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(false)
+  const isControlled = controlledOpen !== undefined
+  const open = isControlled ? controlledOpen : uncontrolledOpen
+
+  const setOpen = useCallback(
+    (val) => {
+      if (!isControlled) setUncontrolledOpen(val)
+      onOpenChange?.(val)
+    },
+    [isControlled, onOpenChange]
+  )
+
+  return (
+    <DialogContext.Provider value={{ open, setOpen }}>
+      {children}
+    </DialogContext.Provider>
+  )
+}
+Dialog.displayName = 'Dialog'
+
+function DialogTrigger({ asChild, children, ...props }) {
+  const { setOpen } = useContext(DialogContext)
+  const Comp = asChild ? 'span' : 'button'
+  return (
+    <Comp onClick={() => setOpen(true)} {...props}>
+      {children}
+    </Comp>
+  )
+}
+DialogTrigger.displayName = 'DialogTrigger'
+
+function DialogClose({ children, ...props }) {
+  const { setOpen } = useContext(DialogContext)
+  return (
+    <button onClick={() => setOpen(false)} {...props}>
+      {children}
+    </button>
+  )
+}
+DialogClose.displayName = 'DialogClose'
+
+const DialogContent = forwardRef(({ className, children, ...props }, ref) => {
+  const { open, setOpen } = useContext(DialogContext)
+
+  useEffect(() => {
+    if (!open) return
+    const handleEsc = (e) => {
+      if (e.key === 'Escape') setOpen(false)
+    }
+    document.addEventListener('keydown', handleEsc)
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.removeEventListener('keydown', handleEsc)
+      document.body.style.overflow = ''
+    }
+  }, [open, setOpen])
+
+  if (!open) return null
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+        onClick={() => setOpen(false)}
+      />
+      <div
+        ref={ref}
+        role="dialog"
+        aria-modal="true"
+        className={cn(
+          'relative z-50 w-full max-w-lg rounded-xl border border-border bg-background shadow-lg p-6 mx-4',
+          'animate-in fade-in-0 zoom-in-95 duration-200',
+          className
+        )}
+        {...props}
+      >
+        {children}
+        <button
+          onClick={() => setOpen(false)}
+          className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+          aria-label="Close"
+        >
+          <X className="size-4" />
+        </button>
+      </div>
+    </div>
+  )
+})
+DialogContent.displayName = 'DialogContent'
+
+const DialogHeader = forwardRef(({ className, ...props }, ref) => {
+  return (
+    <div
+      ref={ref}
+      className={cn('flex flex-col space-y-1.5 text-center sm:text-left mb-4', className)}
+      {...props}
+    />
+  )
+})
+DialogHeader.displayName = 'DialogHeader'
+
+const DialogFooter = forwardRef(({ className, ...props }, ref) => {
+  return (
+    <div
+      ref={ref}
+      className={cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 mt-4', className)}
+      {...props}
+    />
+  )
+})
+DialogFooter.displayName = 'DialogFooter'
+
+const DialogTitle = forwardRef(({ className, ...props }, ref) => {
+  return (
+    <h2
+      ref={ref}
+      className={cn('text-lg font-semibold leading-none tracking-tight', className)}
+      {...props}
+    />
+  )
+})
+DialogTitle.displayName = 'DialogTitle'
+
+const DialogDescription = forwardRef(({ className, ...props }, ref) => {
+  return (
+    <p
+      ref={ref}
+      className={cn('text-sm text-muted-foreground', className)}
+      {...props}
+    />
+  )
+})
+DialogDescription.displayName = 'DialogDescription'
+
+export {
+  Dialog,
+  DialogTrigger,
+  DialogClose,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+  DialogDescription,
+}`
+
+export const DROPDOWN_SOURCE = `import { forwardRef, createContext, useContext, useState, useRef, useEffect } from 'react'
+import { cn } from '../../../lib/utils.js'
+
+const DropdownContext = createContext()
+
+function Dropdown({ children }) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef(null)
+
+  useEffect(() => {
+    if (!open) return
+    const handleClickOutside = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false)
+    }
+    const handleEsc = (e) => {
+      if (e.key === 'Escape') setOpen(false)
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('keydown', handleEsc)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('keydown', handleEsc)
+    }
+  }, [open])
+
+  return (
+    <DropdownContext.Provider value={{ open, setOpen }}>
+      <div ref={ref} className="relative inline-block">
+        {children}
+      </div>
+    </DropdownContext.Provider>
+  )
+}
+Dropdown.displayName = 'Dropdown'
+
+function DropdownTrigger({ asChild, children, ...props }) {
+  const { open, setOpen } = useContext(DropdownContext)
+  const Comp = asChild ? 'span' : 'button'
+  return (
+    <Comp
+      onClick={() => setOpen(!open)}
+      aria-expanded={open}
+      aria-haspopup="true"
+      {...props}
+    >
+      {children}
+    </Comp>
+  )
+}
+DropdownTrigger.displayName = 'DropdownTrigger'
+
+const DropdownContent = forwardRef(({ className, align = 'start', sideOffset = 8, children, ...props }, ref) => {
+  const { open } = useContext(DropdownContext)
+
+  return open ? (
+    <div
+      ref={ref}
+      className={cn(
+        'absolute z-50 min-w-[8rem] overflow-hidden rounded-md border border-border bg-background p-1 shadow-md',
+        'animate-in fade-in-0 zoom-in-95 duration-150',
+        align === 'end' ? 'right-0' : 'left-0',
+        className
+      )}
+      onClick={() => setOpen(false)}
+      role="menu"
+      {...props}
+    >
+      {children}
+    </div>
+  ) : null
+})
+DropdownContent.displayName = 'DropdownContent'
+
+const DropdownItem = forwardRef(({ className, inset, ...props }, ref) => {
+  return (
+    <button
+      ref={ref}
+      role="menuitem"
+      className={cn(
+        'relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground hover:bg-accent hover:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+        inset && 'pl-8',
+        className
+      )}
+      {...props}
+    />
+  )
+})
+DropdownItem.displayName = 'DropdownItem'
+
+const DropdownSeparator = forwardRef(({ className, ...props }, ref) => {
+  return (
+    <div
+      ref={ref}
+      className={cn('-mx-1 my-1 h-px bg-border', className)}
+      {...props}
+    />
+  )
+})
+DropdownSeparator.displayName = 'DropdownSeparator'
+
+const DropdownLabel = forwardRef(({ className, inset, ...props }, ref) => {
+  return (
+    <div
+      ref={ref}
+      className={cn('px-2 py-1.5 text-xs font-medium text-muted-foreground', inset && 'pl-8', className)}
+      {...props}
+    />
+  )
+})
+DropdownLabel.displayName = 'DropdownLabel'
+
+export {
+  Dropdown,
+  DropdownTrigger,
+  DropdownContent,
+  DropdownItem,
+  DropdownSeparator,
+  DropdownLabel,
+}`
+
+export const TABS_SOURCE = `import { forwardRef, createContext, useContext, useState } from 'react'
+import { cn } from '../../../lib/utils.js'
+
+const TabsContext = createContext()
+
+function Tabs({ value: controlledValue, onValueChange, defaultValue, children, className, ...props }) {
+  const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue || '')
+  const isControlled = controlledValue !== undefined
+  const value = isControlled ? controlledValue : uncontrolledValue
+
+  const setValue = (val) => {
+    if (!isControlled) setUncontrolledValue(val)
+    onValueChange?.(val)
+  }
+
+  return (
+    <TabsContext.Provider value={{ value, setValue }}>
+      <div className={cn('', className)} {...props}>
+        {children}
+      </div>
+    </TabsContext.Provider>
+  )
+}
+Tabs.displayName = 'Tabs'
+
+const TabsList = forwardRef(({ className, ...props }, ref) => {
+  return (
+    <div
+      ref={ref}
+      role="tablist"
+      className={cn(
+        'inline-flex h-9 items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground',
+        className
+      )}
+      {...props}
+    />
+  )
+})
+TabsList.displayName = 'TabsList'
+
+const TabsTrigger = forwardRef(({ className, value, disabled, children, ...props }, ref) => {
+  const { value: selectedValue, setValue } = useContext(TabsContext)
+  const isActive = selectedValue === value
+
+  return (
+    <button
+      ref={ref}
+      role="tab"
+      aria-selected={isActive}
+      disabled={disabled}
+      onClick={() => setValue(value)}
+      className={cn(
+        'inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+        isActive
+          ? 'bg-background text-foreground shadow-sm'
+          : 'hover:text-foreground',
+        className
+      )}
+      {...props}
+    >
+      {children}
+    </button>
+  )
+})
+TabsTrigger.displayName = 'TabsTrigger'
+
+const TabsContent = forwardRef(({ className, value, children, ...props }, ref) => {
+  const { value: selectedValue } = useContext(TabsContext)
+  if (selectedValue !== value) return null
+
+  return (
+    <div
+      ref={ref}
+      role="tabpanel"
+      className={cn(
+        'mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+        className
+      )}
+      {...props}
+    >
+      {children}
+    </div>
+  )
+})
+TabsContent.displayName = 'TabsContent'
+
+export { Tabs, TabsList, TabsTrigger, TabsContent }`
+
+export const ACCORDION_SOURCE = `import { forwardRef, createContext, useContext, useState } from 'react'
+import { ChevronDown } from 'lucide-react'
+import { cn } from '../../../lib/utils.js'
+
+const AccordionContext = createContext()
+const AccordionItemContext = createContext()
+
+function Accordion({ type = 'single', defaultValue, children, className, ...props }) {
+  const [openValues, setOpenValues] = useState(
+    defaultValue ? (Array.isArray(defaultValue) ? defaultValue : [defaultValue]) : []
+  )
+
+  const toggleItem = (value) => {
+    if (type === 'single') {
+      setOpenValues((prev) => (prev.includes(value) ? [] : [value]))
+    } else {
+      setOpenValues((prev) =>
+        prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
+      )
+    }
+  }
+
+  return (
+    <AccordionContext.Provider value={{ openValues, toggleItem, type }}>
+      <div className={cn('divide-y divide-border rounded-lg border border-border', className)} {...props}>
+        {children}
+      </div>
+    </AccordionContext.Provider>
+  )
+}
+Accordion.displayName = 'Accordion'
+
+const AccordionItem = forwardRef(({ value, className, children, ...props }, ref) => {
+  return (
+    <AccordionItemContext.Provider value={{ value }}>
+      <div ref={ref} className={cn('', className)} {...props}>
+        {children}
+      </div>
+    </AccordionItemContext.Provider>
+  )
+})
+AccordionItem.displayName = 'AccordionItem'
+
+const AccordionTrigger = forwardRef(({ className, children, ...props }, ref) => {
+  const { openValues, toggleItem } = useContext(AccordionContext)
+  const { value } = useContext(AccordionItemContext)
+  const isOpen = openValues.includes(value)
+
+  return (
+    <button
+      ref={ref}
+      onClick={() => toggleItem(value)}
+      className={cn(
+        'flex w-full items-center justify-between py-4 px-4 text-sm font-medium transition-all hover:underline text-left',
+        className
+      )}
+      aria-expanded={isOpen}
+      {...props}
+    >
+      {children}
+      <ChevronDown
+        className={cn(
+          'size-4 shrink-0 text-muted-foreground transition-transform duration-200',
+          isOpen && 'rotate-180'
+        )}
+      />
+    </button>
+  )
+})
+AccordionTrigger.displayName = 'AccordionTrigger'
+
+const AccordionContent = forwardRef(({ className, children, ...props }, ref) => {
+  const { openValues } = useContext(AccordionContext)
+  const { value } = useContext(AccordionItemContext)
+  const isOpen = openValues.includes(value)
+
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        'overflow-hidden transition-all duration-200',
+        isOpen ? 'max-h-96 pb-4' : 'max-h-0',
+        className
+      )}
+      role="region"
+      {...props}
+    >
+      <div className="px-4 text-sm text-muted-foreground">{children}</div>
+    </div>
+  )
+})
+AccordionContent.displayName = 'AccordionContent'
+
+export { Accordion, AccordionItem, AccordionTrigger, AccordionContent }`
+
+export const AVATAR_SOURCE = `import { forwardRef, useState, useEffect } from 'react'
+import { cn } from '../../../lib/utils.js'
+
+const Avatar = forwardRef(({ className, ...props }, ref) => {
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        'relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full',
+        className
+      )}
+      {...props}
+    />
+  )
+})
+Avatar.displayName = 'Avatar'
+
+const AvatarImage = forwardRef(({ className, src, alt = '', onError, ...props }, ref) => {
+  const [error, setError] = useState(false)
+
+  if (!src || error) return null
+
+  return (
+    <img
+      ref={ref}
+      src={src}
+      alt={alt}
+      onError={(e) => {
+        setError(true)
+        onError?.(e)
+      }}
+      className={cn('aspect-square h-full w-full object-cover', className)}
+      {...props}
+    />
+  )
+})
+AvatarImage.displayName = 'AvatarImage'
+
+const AvatarFallback = forwardRef(({ className, delayMs, children, ...props }, ref) => {
+  const [show, setShow] = useState(!delayMs)
+
+  useEffect(() => {
+    if (!delayMs || show) return
+    const id = setTimeout(() => setShow(true), delayMs)
+    return () => clearTimeout(id)
+  }, [delayMs, show])
+
+  if (!show) return null
+
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        'flex h-full w-full items-center justify-center rounded-full bg-muted text-sm font-medium text-muted-foreground',
+        className
+      )}
+      {...props}
+    >
+      {children}
+    </div>
+  )
+})
+AvatarFallback.displayName = 'AvatarFallback'
+
+export { Avatar, AvatarImage, AvatarFallback }`
+
+export const ALERT_SOURCE = `import { forwardRef } from 'react'
+import { cva } from 'class-variance-authority'
+import { cn } from '../../../lib/utils.js'
+
+const alertVariants = cva(
+  'relative w-full rounded-lg border p-4 [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground [&>svg~*]:pl-7',
+  {
+    variants: {
+      variant: {
+        default: 'bg-background text-foreground',
+        destructive: 'border-destructive/50 text-destructive dark:border-destructive [&>svg]:text-destructive',
+        success: 'border-emerald-500/50 text-emerald-600 dark:border-emerald-500/50 dark:text-emerald-400 [&>svg]:text-emerald-600 dark:[&>svg]:text-emerald-400',
+        warning: 'border-amber-500/50 text-amber-600 dark:border-amber-500/50 dark:text-amber-400 [&>svg]:text-amber-600 dark:[&>svg]:text-amber-400',
+      },
+    },
+    defaultVariants: {
+      variant: 'default',
+    },
+  }
+)
+
+const Alert = forwardRef(({ className, variant, ...props }, ref) => {
+  return (
+    <div
+      ref={ref}
+      role="alert"
+      className={cn(alertVariants({ variant }), className)}
+      {...props}
+    />
+  )
+})
+Alert.displayName = 'Alert'
+
+const AlertTitle = forwardRef(({ className, ...props }, ref) => {
+  return (
+    <h5
+      ref={ref}
+      className={cn('mb-1 font-medium leading-none tracking-tight', className)}
+      {...props}
+    />
+  )
+})
+AlertTitle.displayName = 'AlertTitle'
+
+const AlertDescription = forwardRef(({ className, ...props }, ref) => {
+  return (
+    <div
+      ref={ref}
+      className={cn('text-sm [&_p]:leading-relaxed', className)}
+      {...props}
+    />
+  )
+})
+AlertDescription.displayName = 'AlertDescription'
+
+export { Alert, AlertTitle, AlertDescription }`
+
+export const UI_SOURCES = { CHECKBOX_SOURCE, COMBOBOX_SOURCE, DATEPICKER_SOURCE, RADIOBUTTON_SOURCE, SWITCH_SOURCE, TEXTAREA_SOURCE, TIMEPICKER_SOURCE, CARD_SOURCE, BADGE_SOURCE, DIALOG_SOURCE, DROPDOWN_SOURCE, TABS_SOURCE, ACCORDION_SOURCE, AVATAR_SOURCE, ALERT_SOURCE }
 
 export const components = [
   {
@@ -662,6 +1346,7 @@ export const components = [
     name: 'Button',
     path: '/docs/button',
     description: 'A clickable UI element that triggers an action or event.',
+    comingSoon: false,
     demo: 'ButtonDemo',
     installCmd: 'npx snitchui@latest add button',
     deps: [
@@ -680,6 +1365,7 @@ export const components = [
     name: 'Label',
     path: '/docs/label',
     description: 'A label element for form inputs, providing accessible text associations.',
+    comingSoon: false,
     demo: 'LabelDemo',
     installCmd: 'npx snitchui@latest add label',
     deps: [
@@ -696,6 +1382,7 @@ export const components = [
     name: 'Input',
     path: '/docs/input',
     description: 'A form input field with focus, disabled, and placeholder states.',
+    comingSoon: false,
     demo: 'InputDemo',
     installCmd: 'npx snitchui@latest add input',
     deps: [
@@ -716,6 +1403,7 @@ export const components = [
     name: 'Select',
     path: '/docs/select',
     description: 'A dropdown select component with grouped items, labels, and disabled states.',
+    comingSoon: false,
     demo: 'SelectDemo',
     installCmd: 'npx snitchui@latest add select',
     deps: [
@@ -735,6 +1423,7 @@ export const components = [
     name: 'Checkbox',
     path: '/docs/checkbox',
     description: 'A checkbox component for toggling between checked and unchecked states.',
+    comingSoon: false,
     demo: 'CheckboxDemo',
     installCmd: 'npx snitchui@latest add checkbox',
     deps: [
@@ -754,6 +1443,7 @@ export const components = [
     name: 'Combobox',
     path: '/docs/combobox',
     description: 'A searchable multi-select dropdown with chip input and filter.',
+    comingSoon: false,
     demo: 'ComboboxDemo',
     installCmd: 'npx snitchui@latest add combobox',
     deps: [
@@ -773,6 +1463,7 @@ export const components = [
     name: 'DatePicker',
     path: '/docs/datepicker',
     description: 'A date picker component for selecting dates from a calendar.',
+    comingSoon: false,
     demo: 'DatePickerDemo',
     installCmd: 'npx snitchui@latest add datepicker',
     deps: [
@@ -791,6 +1482,7 @@ export const components = [
     name: 'RadioButton',
     path: '/docs/radiobutton',
     description: 'A radio button group for selecting one option from multiple choices.',
+    comingSoon: false,
     demo: 'RadioButtonDemo',
     installCmd: 'npx snitchui@latest add radiobutton',
     deps: [
@@ -809,6 +1501,7 @@ export const components = [
     name: 'Switch',
     path: '/docs/switch',
     description: 'A toggle switch for binary on/off states.',
+    comingSoon: false,
     demo: 'SwitchDemo',
     installCmd: 'npx snitchui@latest add switch',
     deps: [
@@ -827,6 +1520,7 @@ export const components = [
     name: 'Textarea',
     path: '/docs/textarea',
     description: 'A multi-line text input with focus and disabled states.',
+    comingSoon: false,
     demo: 'TextareaDemo',
     installCmd: 'npx snitchui@latest add textarea',
     deps: [
@@ -844,6 +1538,7 @@ export const components = [
     name: 'TimePicker',
     path: '/docs/timepicker',
     description: 'A time picker component for selecting hours, minutes, and seconds.',
+    comingSoon: false,
     demo: 'TimePickerDemo',
     installCmd: 'npx snitchui@latest add timepicker',
     deps: [
@@ -856,17 +1551,147 @@ export const components = [
       { prop: 'disabled', type: 'boolean', default: 'false', description: 'Disables the time picker' },
     ],
   },
-  { id: 'card', name: 'Card', path: '/docs/card', comingSoon: true, description: 'A container for content.' },
-  { id: 'badge', name: 'Badge', path: '/docs/badge', comingSoon: true, description: 'A small status indicator.' },
-  { id: 'dialog', name: 'Dialog', path: '/docs/dialog', comingSoon: true, description: 'A modal overlay.' },
-  { id: 'dropdown', name: 'Dropdown', path: '/docs/dropdown', comingSoon: true, description: 'A dropdown menu.' },
-  { id: 'tabs', name: 'Tabs', path: '/docs/tabs', comingSoon: true, description: 'Tabbed content sections.' },
-  { id: 'accordion', name: 'Accordion', path: '/docs/accordion', comingSoon: true, description: 'Collapsible content panels.' },
-  { id: 'avatar', name: 'Avatar', path: '/docs/avatar', comingSoon: true, description: 'User avatar image.' },
-  { id: 'alert', name: 'Alert', path: '/docs/alert', comingSoon: true, description: 'A contextual alert message.' },
+  {
+    id: 'card',
+    name: 'Card',
+    path: '/docs/card',
+    description: 'A container for content.',
+    comingSoon: false,
+    demo: 'CardDemo',
+    installCmd: 'npx snitchui@latest add card',
+    deps: [
+      { name: 'Card', file: 'components/ui/card/card.jsx', source: 'CARD_SOURCE' },
+      { name: 'utils', file: 'lib/utils.js', source: 'UTILS_SOURCE' },
+    ],
+    props: [
+      { prop: 'className', type: 'string', default: '-', description: 'Additional CSS classes' },
+    ],
+  },
+  {
+    id: 'badge',
+    name: 'Badge',
+    path: '/docs/badge',
+    description: 'A small status indicator.',
+    comingSoon: false,
+    demo: 'BadgeDemo',
+    installCmd: 'npx snitchui@latest add badge',
+    deps: [
+      { name: 'Badge', file: 'components/ui/badge/badge.jsx', source: 'BADGE_SOURCE' },
+      { name: 'utils', file: 'lib/utils.js', source: 'UTILS_SOURCE' },
+    ],
+    props: [
+      { prop: 'variant', type: '"default" | "secondary" | "outline" | "destructive" | "success" | "warning"', default: '"default"', description: 'Visual style of the badge' },
+      { prop: 'className', type: 'string', default: '-', description: 'Additional CSS classes' },
+    ],
+  },
+  {
+    id: 'dialog',
+    name: 'Dialog',
+    path: '/docs/dialog',
+    description: 'A modal overlay.',
+    comingSoon: false,
+    demo: 'DialogDemo',
+    installCmd: 'npx snitchui@latest add dialog',
+    deps: [
+      { name: 'Dialog', file: 'components/ui/dialog/dialog.jsx', source: 'DIALOG_SOURCE' },
+      { name: 'utils', file: 'lib/utils.js', source: 'UTILS_SOURCE' },
+    ],
+    props: [
+      { prop: 'open', type: 'boolean', default: '-', description: 'Controlled open state' },
+      { prop: 'onOpenChange', type: '(open: boolean) => void', default: '-', description: 'Callback when open state changes' },
+    ],
+  },
+  {
+    id: 'dropdown',
+    name: 'Dropdown',
+    path: '/docs/dropdown',
+    description: 'A dropdown menu.',
+    comingSoon: false,
+    demo: 'DropdownDemo',
+    installCmd: 'npx snitchui@latest add dropdown',
+    deps: [
+      { name: 'Dropdown', file: 'components/ui/dropdown/dropdown.jsx', source: 'DROPDOWN_SOURCE' },
+      { name: 'utils', file: 'lib/utils.js', source: 'UTILS_SOURCE' },
+    ],
+    props: [
+      { prop: 'align', type: '"start" | "end"', default: '"start"', description: 'Alignment of the dropdown content' },
+      { prop: 'className', type: 'string', default: '-', description: 'Additional CSS classes' },
+    ],
+  },
+  {
+    id: 'tabs',
+    name: 'Tabs',
+    path: '/docs/tabs',
+    description: 'Tabbed content sections.',
+    comingSoon: false,
+    demo: 'TabsDemo',
+    installCmd: 'npx snitchui@latest add tabs',
+    deps: [
+      { name: 'Tabs', file: 'components/ui/tabs/tabs.jsx', source: 'TABS_SOURCE' },
+      { name: 'utils', file: 'lib/utils.js', source: 'UTILS_SOURCE' },
+    ],
+    props: [
+      { prop: 'defaultValue', type: 'string', default: '-', description: 'Default active tab value' },
+      { prop: 'value', type: 'string', default: '-', description: 'Controlled active tab value' },
+      { prop: 'onValueChange', type: '(value: string) => void', default: '-', description: 'Callback when active tab changes' },
+    ],
+  },
+  {
+    id: 'accordion',
+    name: 'Accordion',
+    path: '/docs/accordion',
+    description: 'Collapsible content panels.',
+    comingSoon: false,
+    demo: 'AccordionDemo',
+    installCmd: 'npx snitchui@latest add accordion',
+    deps: [
+      { name: 'Accordion', file: 'components/ui/accordion/accordion.jsx', source: 'ACCORDION_SOURCE' },
+      { name: 'utils', file: 'lib/utils.js', source: 'UTILS_SOURCE' },
+    ],
+    props: [
+      { prop: 'type', type: '"single" | "multiple"', default: '"single"', description: 'Whether one or multiple items can open' },
+      { prop: 'defaultValue', type: 'string | string[]', default: '-', description: 'Default open item(s)' },
+    ],
+  },
+  {
+    id: 'avatar',
+    name: 'Avatar',
+    path: '/docs/avatar',
+    description: 'User avatar image.',
+    comingSoon: false,
+    demo: 'AvatarDemo',
+    installCmd: 'npx snitchui@latest add avatar',
+    deps: [
+      { name: 'Avatar', file: 'components/ui/avatar/avatar.jsx', source: 'AVATAR_SOURCE' },
+      { name: 'utils', file: 'lib/utils.js', source: 'UTILS_SOURCE' },
+    ],
+    props: [
+      { prop: 'src', type: 'string', default: '-', description: 'Image source URL' },
+      { prop: 'alt', type: 'string', default: '""', description: 'Alt text for image' },
+      { prop: 'delayMs', type: 'number', default: '-', description: 'Delay before showing fallback (ms)' },
+      { prop: 'className', type: 'string', default: '-', description: 'Additional CSS classes' },
+    ],
+  },
+  {
+    id: 'alert',
+    name: 'Alert',
+    path: '/docs/alert',
+    description: 'A contextual alert message.',
+    comingSoon: false,
+    demo: 'AlertDemo',
+    installCmd: 'npx snitchui@latest add alert',
+    deps: [
+      { name: 'Alert', file: 'components/ui/alert/alert.jsx', source: 'ALERT_SOURCE' },
+      { name: 'utils', file: 'lib/utils.js', source: 'UTILS_SOURCE' },
+    ],
+    props: [
+      { prop: 'variant', type: '"default" | "destructive" | "success" | "warning"', default: '"default"', description: 'Visual style of the alert' },
+      { prop: 'className', type: 'string', default: '-', description: 'Additional CSS classes' },
+    ],
+  },
 ]
 
-const sourceMap = { BUTTON_SOURCE, LABEL_SOURCE, INPUT_SOURCE, SELECT_SOURCE, UTILS_SOURCE, CHECKBOX_SOURCE, COMBOBOX_SOURCE, DATEPICKER_SOURCE, RADIOBUTTON_SOURCE, SWITCH_SOURCE, TEXTAREA_SOURCE, TIMEPICKER_SOURCE }
+const sourceMap = { BUTTON_SOURCE, LABEL_SOURCE, INPUT_SOURCE, SELECT_SOURCE, UTILS_SOURCE, CHECKBOX_SOURCE, COMBOBOX_SOURCE, DATEPICKER_SOURCE, RADIOBUTTON_SOURCE, SWITCH_SOURCE, TEXTAREA_SOURCE, TIMEPICKER_SOURCE, CARD_SOURCE, BADGE_SOURCE, DIALOG_SOURCE, DROPDOWN_SOURCE, TABS_SOURCE, ACCORDION_SOURCE, AVATAR_SOURCE, ALERT_SOURCE }
 
 export function getComponent(id) {
   return components.find((c) => c.id === id)

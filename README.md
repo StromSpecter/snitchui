@@ -61,6 +61,14 @@ npx snitchui@latest add select
 | `Switch` | Toggle switch for binary on/off states |
 | `Textarea` | Multi-line text input with focus and disabled states |
 | `TimePicker` | Time picker for hours, minutes, and seconds |
+| `Card` | Container with header, title, description, content, and footer |
+| `Badge` | Small status indicator with multiple color variants |
+| `Dialog` | Modal overlay with controlled/uncontrolled state |
+| `Dropdown` | Menu with items, separators, labels, and keyboard support |
+| `Tabs` | Tabbed content sections with controlled state |
+| `Accordion` | Collapsible panels with single/multiple mode |
+| `Avatar` | User avatar with image fallback and delay |
+| `Alert` | Contextual message with icon support and variants |
 
 ## Usage
 
