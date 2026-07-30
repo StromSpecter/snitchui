@@ -188,8 +188,25 @@ export async function addTemplate(name, options = {}) {
     log(`  ${GREEN}✓ Created ${relative}${RESET}`)
   }
 
+  // Write barrel index.js for IDE auto-import
+  const templateDir = path.join(srcDir, 'components', 'templates')
+  const indexDest = path.join(templateDir, 'index.js')
+  const exportName = `${capitalize(name)}Form`
+  const exportLine = `export { ${exportName} } from './${exportName}'\n`
+
+  if (!fileExists(indexDest)) {
+    writeFile(indexDest, exportLine)
+    log(`  ${GREEN}✓ Created components/templates/index.js${RESET}`)
+  } else {
+    const existing = fs.readFileSync(indexDest, 'utf-8')
+    if (!existing.includes(exportName)) {
+      fs.appendFileSync(indexDest, exportLine)
+      log(`  ${GREEN}✓ Updated components/templates/index.js${RESET}`)
+    }
+  }
+
   log(`\n${GREEN}Done! Import it:${RESET}`)
-  log(`  import { ${capitalize(name)}Form } from './components/templates/${capitalize(name)}Form'`)
+  log(`  import { ${exportName} } from './components/templates'`)
 }
 
 function capitalize(s) {
