@@ -41,7 +41,7 @@ const TOKENS = [
 
 export function ThemingPage() {
   return (
-    <div className="mx-auto max-w-3xl px-6 py-10">
+    <div className="mx-auto max-w-4xl px-6 py-10">
       <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight">Theming</h1>
         <p className="mt-2 text-muted-foreground">
