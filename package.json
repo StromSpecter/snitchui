@@ -1,6 +1,6 @@
 {
   "name": "snitchui",
-  "version": "1.3.7",
+  "version": "1.3.8",
   "description": "Build beautiful UI without the bloat. Copy-paste Radix UI + Tailwind CSS v4 components. You own every line of code.",
   "license": "MIT",
   "type": "module",
