@@ -10,7 +10,7 @@ const inputVariants = {
 const Input = forwardRef(
   ({ className, type, size = 'md', startIcon, endIcon, error, ...props }, ref) => {
     return (
-      <div className="relative">
+      <div className={cn('relative', className)}>
         {startIcon && (
           <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none [&_svg]:size-4">
             {startIcon}
