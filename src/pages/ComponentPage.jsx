@@ -19,6 +19,12 @@ import { TabsPage } from './TabsPage.jsx'
 import { AccordionPage } from './AccordionPage.jsx'
 import { AvatarPage } from './AvatarPage.jsx'
 import { AlertPage } from './AlertPage.jsx'
+import { TooltipPage } from './TooltipPage.jsx'
+import { PopoverPage } from './PopoverPage.jsx'
+import { ToastPage } from './ToastPage.jsx'
+import { SheetPage } from './SheetPage.jsx'
+import { CommandPage } from './CommandPage.jsx'
+
 
 const pageMap = {
   button: ButtonPage,
@@ -40,6 +46,11 @@ const pageMap = {
   accordion: AccordionPage,
   avatar: AvatarPage,
   alert: AlertPage,
+  tooltip: TooltipPage,
+  popover: PopoverPage,
+  toast: ToastPage,
+  sheet: SheetPage,
+  command: CommandPage,
 }
 
 export function ComponentPage() {

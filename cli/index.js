@@ -136,6 +136,12 @@ export async function add(name, options = {}) {
   if (name === 'alert') exportNames.push('AlertTitle', 'AlertDescription')
   if (name === 'radiobutton') exportNames.splice(0, 1, 'RadioButtonGroup', 'RadioButtonItem', 'RadioButtonLabel')
   if (name === 'combobox') exportNames.push('ComboboxItem')
+  if (name === 'tooltip') exportNames.push('TooltipTrigger', 'TooltipContent', 'TooltipProvider')
+  if (name === 'popover') exportNames.push('PopoverTrigger', 'PopoverContent', 'PopoverAnchor')
+  if (name === 'toast') exportNames.splice(0, 1, 'Toaster')
+  if (name === 'sheet') exportNames.push('SheetTrigger', 'SheetClose', 'SheetContent', 'SheetHeader', 'SheetFooter', 'SheetTitle', 'SheetDescription')
+  if (name === 'command') exportNames.push('CommandInput', 'CommandList', 'CommandEmpty', 'CommandGroup', 'CommandItem', 'CommandShortcut', 'CommandSeparator')
+
 
   if (!fileExists(indexDest) || options.force) {
     const exportList = exportNames.join(', ')

@@ -1338,7 +1338,367 @@ AlertDescription.displayName = 'AlertDescription'
 
 export { Alert, AlertTitle, AlertDescription }`
 
-export const UI_SOURCES = { CHECKBOX_SOURCE, COMBOBOX_SOURCE, DATEPICKER_SOURCE, RADIOBUTTON_SOURCE, SWITCH_SOURCE, TEXTAREA_SOURCE, TIMEPICKER_SOURCE, CARD_SOURCE, BADGE_SOURCE, DIALOG_SOURCE, DROPDOWN_SOURCE, TABS_SOURCE, ACCORDION_SOURCE, AVATAR_SOURCE, ALERT_SOURCE }
+export const TOOLTIP_SOURCE = `import * as TooltipPrimitive from '@radix-ui/react-tooltip'
+import { forwardRef } from 'react'
+import { cn } from '../../lib/utils'
+
+const TooltipProvider = TooltipPrimitive.Provider
+const Tooltip = TooltipPrimitive.Root
+const TooltipTrigger = TooltipPrimitive.Trigger
+
+const TooltipContent = forwardRef(({ className, sideOffset = 4, ...props }, ref) => {
+  return (
+    <TooltipPrimitive.Portal>
+      <TooltipPrimitive.Content
+        ref={ref}
+        sideOffset={sideOffset}
+        className={cn(
+          'z-50 overflow-hidden rounded-md border border-border bg-background px-3 py-1.5 text-xs text-foreground shadow-md animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-1 data-[side=left]:slide-in-from-right-1 data-[side=right]:slide-in-from-left-1 data-[side=top]:slide-in-from-bottom-1',
+          className
+        )}
+        {...props}
+      />
+    </TooltipPrimitive.Portal>
+  )
+})
+TooltipContent.displayName = 'TooltipContent'
+
+export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider }`
+
+export const POPOVER_SOURCE = `import * as PopoverPrimitive from '@radix-ui/react-popover'
+import { forwardRef } from 'react'
+import { cn } from '../../lib/utils'
+
+const Popover = PopoverPrimitive.Root
+const PopoverTrigger = PopoverPrimitive.Trigger
+const PopoverAnchor = PopoverPrimitive.Anchor
+
+const PopoverContent = forwardRef(({ className, align = 'center', sideOffset = 4, ...props }, ref) => {
+  return (
+    <PopoverPrimitive.Portal>
+      <PopoverPrimitive.Content
+        ref={ref}
+        align={align}
+        sideOffset={sideOffset}
+        className={cn(
+          'z-50 w-72 rounded-md border border-border bg-background p-4 text-foreground shadow-md outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2',
+          className
+        )}
+        {...props}
+      />
+    </PopoverPrimitive.Portal>
+  )
+})
+PopoverContent.displayName = 'PopoverContent'
+
+export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor }`
+
+export const TOAST_SOURCE = `import { Toaster as SonnerToaster } from 'sonner'
+
+function Toaster() {
+  return (
+    <SonnerToaster
+      className="toaster group"
+      toastOptions={{
+        classNames: {
+          toast:
+            'group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg',
+          description: 'group-[.toast]:text-muted-foreground',
+          actionButton:
+            'group-[.toast]:bg-primary group-[.toast]:text-primary-foreground',
+          cancelButton:
+            'group-[.toast]:bg-muted group-[.toast]:text-muted-foreground',
+        },
+      }}
+    />
+  )
+}
+
+export { Toaster }`
+
+export const SHEET_SOURCE = `import { forwardRef, createContext, useContext, useState, useEffect, useCallback } from 'react'
+import { X } from 'lucide-react'
+import { cn } from '../../lib/utils'
+
+const SheetContext = createContext()
+
+function Sheet({ open: controlledOpen, onOpenChange, children }) {
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(false)
+  const isControlled = controlledOpen !== undefined
+  const open = isControlled ? controlledOpen : uncontrolledOpen
+
+  const setOpen = useCallback(
+    (val) => {
+      if (!isControlled) setUncontrolledOpen(val)
+      onOpenChange?.(val)
+    },
+    [isControlled, onOpenChange]
+  )
+
+  return (
+    <SheetContext.Provider value={{ open, setOpen }}>
+      {children}
+    </SheetContext.Provider>
+  )
+}
+Sheet.displayName = 'Sheet'
+
+function SheetTrigger({ asChild, children, ...props }) {
+  const { setOpen } = useContext(SheetContext)
+  const Comp = asChild ? 'span' : 'button'
+  return (
+    <Comp onClick={() => setOpen(true)} {...props}>
+      {children}
+    </Comp>
+  )
+}
+SheetTrigger.displayName = 'SheetTrigger'
+
+function SheetClose({ children, ...props }) {
+  const { setOpen } = useContext(SheetContext)
+  return (
+    <button onClick={() => setOpen(false)} {...props}>
+      {children}
+    </button>
+  )
+}
+SheetClose.displayName = 'SheetClose'
+
+const SheetContent = forwardRef(
+  ({ className, side = 'right', position = 'fixed', overlay = true, children, ...props }, ref) => {
+    const { open, setOpen } = useContext(SheetContext)
+
+    useEffect(() => {
+      if (!open) return
+      const handleEsc = (e) => {
+        if (e.key === 'Escape') setOpen(false)
+      }
+      if (position === 'fixed') document.body.style.overflow = 'hidden'
+      document.addEventListener('keydown', handleEsc)
+      return () => {
+        document.removeEventListener('keydown', handleEsc)
+        if (position === 'fixed') document.body.style.overflow = ''
+      }
+    }, [open, setOpen, position])
+
+    if (!open) return null
+
+    return (
+      <>
+        {overlay && (
+          <div
+            className={cn(
+              'z-50 bg-black/50 backdrop-blur-md animate-in fade-in-0 duration-200',
+              position === 'fixed' ? 'fixed inset-0' : 'absolute inset-0'
+            )}
+            onClick={() => setOpen(false)}
+          />
+        )}
+        <div
+          ref={ref}
+          role="dialog"
+          aria-modal="true"
+          className={cn(
+            'z-50 flex flex-col gap-4 bg-background p-6 shadow-lg',
+            position === 'fixed' ? 'fixed' : 'absolute',
+            side === 'top' && 'inset-x-0 top-0 max-h-full border-b animate-in slide-in-from-top duration-300',
+            side === 'bottom' && 'inset-x-0 bottom-0 max-h-full border-t animate-in slide-in-from-bottom duration-300',
+            side === 'left' && 'inset-y-0 left-0 h-full w-3/4 border-r max-w-sm animate-in slide-in-from-left duration-300',
+            side === 'right' && 'inset-y-0 right-0 h-full w-3/4 border-l max-w-sm animate-in slide-in-from-right duration-300',
+            className
+          )}
+          {...props}
+        >
+          {children}
+          <button
+            onClick={() => setOpen(false)}
+            className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+            aria-label="Close"
+          >
+            <X className="size-4" />
+          </button>
+        </div>
+      </>
+    )
+  }
+)
+SheetContent.displayName = 'SheetContent'
+
+const SheetHeader = forwardRef(({ className, ...props }, ref) => {
+  return (
+    <div
+      ref={ref}
+      className={cn('flex flex-col space-y-1.5 text-center sm:text-left mb-4', className)}
+      {...props}
+    />
+  )
+})
+SheetHeader.displayName = 'SheetHeader'
+
+const SheetFooter = forwardRef(({ className, ...props }, ref) => {
+  return (
+    <div
+      ref={ref}
+      className={cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 mt-4', className)}
+      {...props}
+    />
+  )
+})
+SheetFooter.displayName = 'SheetFooter'
+
+const SheetTitle = forwardRef(({ className, ...props }, ref) => {
+  return (
+    <h2
+      ref={ref}
+      className={cn('text-lg font-semibold leading-none tracking-tight', className)}
+      {...props}
+    />
+  )
+})
+SheetTitle.displayName = 'SheetTitle'
+
+const SheetDescription = forwardRef(({ className, ...props }, ref) => {
+  return (
+    <p
+      ref={ref}
+      className={cn('text-sm text-muted-foreground', className)}
+      {...props}
+    />
+  )
+})
+SheetDescription.displayName = 'SheetDescription'
+
+export {
+  Sheet,
+  SheetTrigger,
+  SheetClose,
+  SheetContent,
+  SheetHeader,
+  SheetFooter,
+  SheetTitle,
+  SheetDescription,
+}`
+
+export const COMMAND_SOURCE = `import { forwardRef } from 'react'
+import { Command as CommandPrimitive } from 'cmdk'
+import { Search } from 'lucide-react'
+import { cn } from '../../lib/utils'
+
+const Command = forwardRef(({ className, ...props }, ref) => {
+  return (
+    <CommandPrimitive
+      ref={ref}
+      className={cn(
+        'flex h-full w-full flex-col overflow-hidden rounded-md bg-background text-foreground',
+        className
+      )}
+      {...props}
+    />
+  )
+})
+Command.displayName = 'Command'
+
+const CommandInput = forwardRef(({ className, ...props }, ref) => {
+  return (
+    <div className="flex items-center border-b border-border px-3" cmdk-input-wrapper="">
+      <Search className="mr-2 size-4 shrink-0 opacity-50" />
+      <CommandPrimitive.Input
+        ref={ref}
+        className={cn(
+          'flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50',
+          className
+        )}
+        {...props}
+      />
+    </div>
+  )
+})
+CommandInput.displayName = 'CommandInput'
+
+const CommandList = forwardRef(({ className, ...props }, ref) => {
+  return (
+    <CommandPrimitive.List
+      ref={ref}
+      className={cn('max-h-[300px] overflow-y-auto overflow-x-hidden', className)}
+      {...props}
+    />
+  )
+})
+CommandList.displayName = 'CommandList'
+
+const CommandEmpty = forwardRef((props, ref) => {
+  return (
+    <CommandPrimitive.Empty
+      ref={ref}
+      className="py-6 text-center text-sm text-muted-foreground"
+      {...props}
+    />
+  )
+})
+CommandEmpty.displayName = 'CommandEmpty'
+
+const CommandGroup = forwardRef(({ className, ...props }, ref) => {
+  return (
+    <CommandPrimitive.Group
+      ref={ref}
+      className={cn(
+        'overflow-hidden p-1 text-foreground [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground',
+        className
+      )}
+      {...props}
+    />
+  )
+})
+CommandGroup.displayName = 'CommandGroup'
+
+const CommandSeparator = forwardRef(({ className, ...props }, ref) => {
+  return (
+    <CommandPrimitive.Separator
+      ref={ref}
+      className={cn('-mx-1 h-px bg-border', className)}
+      {...props}
+    />
+  )
+})
+CommandSeparator.displayName = 'CommandSeparator'
+
+const CommandItem = forwardRef(({ className, ...props }, ref) => {
+  return (
+    <CommandPrimitive.Item
+      ref={ref}
+      className={cn(
+        'relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50',
+        className
+      )}
+      {...props}
+    />
+  )
+})
+CommandItem.displayName = 'CommandItem'
+
+const CommandShortcut = forwardRef(({ className, ...props }, ref) => {
+  return (
+    <span
+      ref={ref}
+      className={cn('ml-auto text-xs tracking-widest text-muted-foreground', className)}
+      {...props}
+    />
+  )
+})
+CommandShortcut.displayName = 'CommandShortcut'
+
+export {
+  Command,
+  CommandInput,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+  CommandShortcut,
+  CommandSeparator,
+}`
+
+export const UI_SOURCES = { CHECKBOX_SOURCE, COMBOBOX_SOURCE, DATEPICKER_SOURCE, RADIOBUTTON_SOURCE, SWITCH_SOURCE, TEXTAREA_SOURCE, TIMEPICKER_SOURCE, CARD_SOURCE, BADGE_SOURCE, DIALOG_SOURCE, DROPDOWN_SOURCE, TABS_SOURCE, ACCORDION_SOURCE, AVATAR_SOURCE, ALERT_SOURCE, TOOLTIP_SOURCE, POPOVER_SOURCE, TOAST_SOURCE, SHEET_SOURCE, COMMAND_SOURCE }
 
 export const components = [
   {
@@ -1689,9 +2049,106 @@ export const components = [
       { prop: 'className', type: 'string', default: '-', description: 'Additional CSS classes' },
     ],
   },
+  {
+    id: 'tooltip',
+    name: 'Tooltip',
+    path: '/docs/tooltip',
+    description: 'A popup that displays information when hovering over an element.',
+    comingSoon: false,
+    demo: 'TooltipDemo',
+    installCmd: 'npx snitchui@latest add tooltip',
+    deps: [
+      { name: 'Tooltip', file: 'components/ui/tooltip/tooltip.jsx', source: 'TOOLTIP_SOURCE' },
+      { name: '@radix-ui/react-tooltip', file: 'node_modules/@radix-ui/react-tooltip', source: null },
+      { name: 'utils', file: 'lib/utils.js', source: 'UTILS_SOURCE' },
+    ],
+    props: [
+      { prop: 'side', type: '"top" | "bottom" | "left" | "right"', default: '"top"', description: 'Preferred tooltip side' },
+      { prop: 'sideOffset', type: 'number', default: '4', description: 'Offset from the trigger element' },
+      { prop: 'delayDuration', type: 'number', default: '700', description: 'Delay in ms before showing' },
+    ],
+  },
+  {
+    id: 'popover',
+    name: 'Popover',
+    path: '/docs/popover',
+    description: 'A floating card that appears when clicking a trigger element.',
+    comingSoon: false,
+    demo: 'PopoverDemo',
+    installCmd: 'npx snitchui@latest add popover',
+    deps: [
+      { name: 'Popover', file: 'components/ui/popover/popover.jsx', source: 'POPOVER_SOURCE' },
+      { name: '@radix-ui/react-popover', file: 'node_modules/@radix-ui/react-popover', source: null },
+      { name: 'utils', file: 'lib/utils.js', source: 'UTILS_SOURCE' },
+    ],
+    props: [
+      { prop: 'side', type: '"top" | "bottom" | "left" | "right"', default: '"bottom"', description: 'Preferred popover side' },
+      { prop: 'sideOffset', type: 'number', default: '4', description: 'Offset from the trigger element' },
+      { prop: 'align', type: '"start" | "center" | "end"', default: '"center"', description: 'Alignment relative to trigger' },
+    ],
+  },
+  {
+    id: 'toast',
+    name: 'Toast',
+    path: '/docs/toast',
+    description: 'A toast notification system for showing temporary messages.',
+    comingSoon: false,
+    demo: 'ToastDemo',
+    installCmd: 'npx snitchui@latest add toast',
+    deps: [
+      { name: 'Toaster', file: 'components/ui/toast/toaster.jsx', source: 'TOAST_SOURCE' },
+      { name: 'sonner', file: 'node_modules/sonner', source: null },
+    ],
+    props: [
+      { prop: 'position', type: '"top-left" | "top-right" | "bottom-left" | "bottom-right" | "top-center" | "bottom-center"', default: '"bottom-right"', description: 'Toast position on screen' },
+      { prop: 'richColors', type: 'boolean', default: 'false', description: 'Use rich colored toasts' },
+      { prop: 'closeButton', type: 'boolean', default: 'false', description: 'Show close button on toasts' },
+    ],
+  },
+  {
+    id: 'sheet',
+    name: 'Sheet',
+    path: '/docs/sheet',
+    description: 'A slide-in panel that opens from any side of the screen.',
+    comingSoon: false,
+    demo: 'SheetDemo',
+    installCmd: 'npx snitchui@latest add sheet',
+    deps: [
+      { name: 'Sheet', file: 'components/ui/sheet/sheet.jsx', source: 'SHEET_SOURCE' },
+      { name: 'utils', file: 'lib/utils.js', source: 'UTILS_SOURCE' },
+    ],
+    props: [
+      { prop: 'side', type: '"top" | "bottom" | "left" | "right"', default: '"right"', description: 'Which side the sheet slides from' },
+      { prop: 'position', type: '"fixed" | "absolute"', default: '"fixed"', description: 'Positioning mode. Use absolute for contained previews' },
+      { prop: 'overlay', type: 'boolean', default: 'true', description: 'Show the backdrop overlay' },
+      { prop: 'open', type: 'boolean', default: '-', description: 'Controlled open state' },
+      { prop: 'onOpenChange', type: '(open: boolean) => void', default: '-', description: 'Callback when open state changes' },
+    ],
+  },
+  {
+    id: 'command',
+    name: 'Command',
+    path: '/docs/command',
+    description: 'A command palette component for keyboard-driven navigation and search.',
+    comingSoon: false,
+    demo: 'CommandDemo',
+    installCmd: 'npx snitchui@latest add command',
+    deps: [
+      { name: 'Command', file: 'components/ui/command/command.jsx', source: 'COMMAND_SOURCE' },
+      { name: 'cmdk', file: 'node_modules/cmdk', source: null },
+      { name: 'utils', file: 'lib/utils.js', source: 'UTILS_SOURCE' },
+    ],
+    props: [
+      { prop: 'shouldFilter', type: 'boolean', default: 'true', description: 'Whether to filter items by input' },
+      { prop: 'defaultValue', type: 'string', default: '-', description: 'Default selected value' },
+      { prop: 'value', type: 'string', default: '-', description: 'Controlled selected value' },
+      { prop: 'onValueChange', type: '(value: string) => void', default: '-', description: 'Callback when selected value changes' },
+    ],
+  },
+
 ]
 
-const sourceMap = { BUTTON_SOURCE, LABEL_SOURCE, INPUT_SOURCE, SELECT_SOURCE, UTILS_SOURCE, CHECKBOX_SOURCE, COMBOBOX_SOURCE, DATEPICKER_SOURCE, RADIOBUTTON_SOURCE, SWITCH_SOURCE, TEXTAREA_SOURCE, TIMEPICKER_SOURCE, CARD_SOURCE, BADGE_SOURCE, DIALOG_SOURCE, DROPDOWN_SOURCE, TABS_SOURCE, ACCORDION_SOURCE, AVATAR_SOURCE, ALERT_SOURCE }
+const sourceMap = { BUTTON_SOURCE, LABEL_SOURCE, INPUT_SOURCE, SELECT_SOURCE, UTILS_SOURCE, CHECKBOX_SOURCE, COMBOBOX_SOURCE, DATEPICKER_SOURCE, RADIOBUTTON_SOURCE, SWITCH_SOURCE, TEXTAREA_SOURCE, TIMEPICKER_SOURCE, CARD_SOURCE, BADGE_SOURCE, DIALOG_SOURCE, DROPDOWN_SOURCE, TABS_SOURCE, ACCORDION_SOURCE, AVATAR_SOURCE, ALERT_SOURCE, TOOLTIP_SOURCE, POPOVER_SOURCE, TOAST_SOURCE, SHEET_SOURCE, COMMAND_SOURCE }
 
 export function getComponent(id) {
   return components.find((c) => c.id === id)
