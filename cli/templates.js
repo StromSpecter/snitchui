@@ -2295,6 +2295,209 @@ export function SignupForm() {
   )
 }`
 
+const forgotPasswordFormContent = `import { Button } from '../ui/button'
+import { Input } from '../ui/input'
+import { Label } from '../ui/label'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../ui/card'
+
+export function ForgotPasswordForm() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background p-4">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle className="text-2xl">Forgot password?</CardTitle>
+          <CardDescription>
+            Enter your email below and we'll send you a link to reset your password.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form>
+            <div className="grid gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input id="email" type="email" placeholder="m@example.com" required />
+              </div>
+              <Button type="submit" className="w-full">Send Reset Link</Button>
+            </div>
+          </form>
+        </CardContent>
+        <CardFooter>
+          <p className="text-sm text-muted-foreground">
+            Remembered your password?{" "}
+            <a href="/signin" className="underline">Back to Sign In</a>
+          </p>
+        </CardFooter>
+      </Card>
+    </div>
+  )
+}`
+
+const resetPasswordFormContent = `import { Button } from '../ui/button'
+import { Input } from '../ui/input'
+import { Label } from '../ui/label'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../ui/card'
+
+export function ResetPasswordForm() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background p-4">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle className="text-2xl">Reset password</CardTitle>
+          <CardDescription>
+            Enter your new password below to reset your account password.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form>
+            <div className="grid gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="password">New Password</Label>
+                <Input id="password" type="password" required />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="confirm">Confirm Password</Label>
+                <Input id="confirm" type="password" required />
+              </div>
+              <Button type="submit" className="w-full">Reset Password</Button>
+            </div>
+          </form>
+        </CardContent>
+        <CardFooter>
+          <p className="text-sm text-muted-foreground">
+            Remembered your password?{" "}
+            <a href="/signin" className="underline">Back to Sign In</a>
+          </p>
+        </CardFooter>
+      </Card>
+    </div>
+  )
+}`
+
+const checkEmailFormContent = `import { Button } from '../ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card'
+
+export function CheckEmailForm() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background p-4">
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center">
+          <div className="mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+          </div>
+          <CardTitle className="text-2xl">Check your email</CardTitle>
+          <CardDescription>
+            We've sent a password reset link to your email. Check your inbox to continue.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <Button className="w-full">Open Email App</Button>
+          <Button variant="outline" className="w-full">Resend Email</Button>
+        </CardContent>
+        <p className="px-6 pb-6 text-center text-sm text-muted-foreground">
+          <a href="/signin" className="underline">Back to Sign In</a>
+        </p>
+      </Card>
+    </div>
+  )
+}`
+
+const verifyEmailFormContent = `import { Button } from '../ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card'
+
+export function VerifyEmailForm() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background p-4">
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center">
+          <div className="mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+          </div>
+          <CardTitle className="text-2xl">Verify your email</CardTitle>
+          <CardDescription>
+            We sent a verification link to your email address. Click the link to activate your account.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <Button className="w-full">Resend Verification Email</Button>
+        </CardContent>
+        <p className="px-6 pb-6 text-center text-sm text-muted-foreground">
+          Already verified?{" "}
+          <a href="/signin" className="underline">Sign In</a>
+        </p>
+      </Card>
+    </div>
+  )
+}`
+
+const emailVerifiedFormContent = `import { Button } from '../ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card'
+
+export function EmailVerifiedForm() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background p-4">
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center">
+          <div className="mx-auto mb-3 flex size-12 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+          </div>
+          <CardTitle className="text-2xl">Email verified</CardTitle>
+          <CardDescription>
+            Your email has been verified successfully. You can now continue to your account.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <Button className="w-full">Continue to Dashboard</Button>
+          <Button variant="outline" className="w-full">Go to Sign In</Button>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}`
+
+const otpVerificationFormContent = `import { Button } from '../ui/button'
+import { Input } from '../ui/input'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card'
+
+export function OtpVerificationForm() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background p-4">
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl">Enter verification code</CardTitle>
+          <CardDescription>
+            We've sent a 6-digit code to your email. Enter it below to continue.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form>
+            <div className="grid gap-4">
+              <div className="flex justify-center gap-2">
+                {[0, 1, 2, 3, 4, 5].map((i) => (
+                  <Input
+                    key={i}
+                    maxLength={1}
+                    inputMode="numeric"
+                    autoComplete="one-time-code"
+                    className="h-12 w-12 text-center text-lg"
+                    aria-label={\`Digit \${i + 1}\`}
+                  />
+                ))}
+              </div>
+              <Button type="submit" className="w-full">Verify Code</Button>
+            </div>
+          </form>
+          <p className="mt-4 text-center text-sm text-muted-foreground">
+            Didn't receive the code?{" "}
+            <a href="#" className="underline">Resend Code</a>
+          </p>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}`
+
+
+
 export const templates = {
   signin: {
     name: 'signin',
@@ -2315,6 +2518,72 @@ export const templates = {
       {
         path: 'components/templates/SignupForm.jsx',
         content: signupFormContent,
+      },
+    ],
+  },
+  'forgot-password': {
+    name: 'forgot-password',
+    deps: [],
+    uiDeps: ['button', 'input', 'label', 'card'],
+    files: [
+      {
+        path: 'components/templates/ForgotPasswordForm.jsx',
+        content: forgotPasswordFormContent,
+      },
+    ],
+  },
+  'reset-password': {
+    name: 'reset-password',
+    deps: [],
+    uiDeps: ['button', 'input', 'label', 'card'],
+    files: [
+      {
+        path: 'components/templates/ResetPasswordForm.jsx',
+        content: resetPasswordFormContent,
+      },
+    ],
+  },
+  'check-email': {
+    name: 'check-email',
+    deps: [],
+    uiDeps: ['button', 'card'],
+    files: [
+      {
+        path: 'components/templates/CheckEmailForm.jsx',
+        content: checkEmailFormContent,
+      },
+    ],
+  },
+  'verify-email': {
+    name: 'verify-email',
+    deps: [],
+    uiDeps: ['button', 'card'],
+    files: [
+      {
+        path: 'components/templates/VerifyEmailForm.jsx',
+        content: verifyEmailFormContent,
+      },
+    ],
+  },
+  'email-verified': {
+    name: 'email-verified',
+    deps: [],
+    uiDeps: ['button', 'card'],
+    files: [
+      {
+        path: 'components/templates/EmailVerifiedForm.jsx',
+        content: emailVerifiedFormContent,
+      },
+    ],
+  },
+  'otp-verification': {
+    name: 'otp-verification',
+    deps: [],
+    uiDeps: ['button', 'input', 'card'],
+    files: [
+      {
+        path: 'components/templates/OtpVerificationForm.jsx',
+        content: otpVerificationFormContent,
       },
     ],
   },
