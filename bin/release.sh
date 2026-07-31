@@ -3,11 +3,11 @@ set -euo pipefail
 
 LEVEL="patch"
 
-if git log --oneline -20 | grep -qi "feat"; then
+if git log --oneline -20 | grep -i "feat" >/dev/null; then
   LEVEL="minor"
 fi
 
-if git log --oneline -20 | grep -q "BREAKING CHANGE"; then
+if git log --oneline -20 | grep "BREAKING CHANGE" >/dev/null; then
   LEVEL="major"
 fi
 
