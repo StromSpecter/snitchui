@@ -1,5 +1,6 @@
 import { AccordionDemo } from '../components/ui/accordion/accordion.demo.jsx'
 import { CodeBlock } from '../components/ui/CodeBlock.jsx'
+import { HighlightedCode } from '../components/ui/HighlightedCode.jsx'
 import { CopyButton } from '../components/ui/CopyButton.jsx'
 import { components, resolveDeps } from '../constants/components.js'
 
@@ -31,15 +32,14 @@ export function AccordionPage() {
             <span className="text-sm font-medium">CLI</span>
             <CopyButton text={meta.installCmd} label="install-accordion" />
           </div>
-          <pre className="p-4 text-sm overflow-x-auto">
-            <code>{meta.installCmd}</code>
-          </pre>
+          <HighlightedCode code={meta.installCmd} language="bash" />
         </div>
       </section>
 
       <section className="mb-12">
         <h2 className="mb-4 text-xl font-semibold tracking-tight">Usage</h2>
         <CodeBlock
+          highlight
           code={`import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion'
 
 export function Example() {
@@ -89,7 +89,7 @@ export function Example() {
         <h2 className="mb-4 text-xl font-semibold tracking-tight">Source</h2>
         {deps.map((dep) => (
           <div key={dep.file} className="mb-4">
-            <CodeBlock code={dep.source} filename={dep.file} />
+            <CodeBlock code={dep.source} filename={dep.file} highlight />
           </div>
         ))}
       </section>
