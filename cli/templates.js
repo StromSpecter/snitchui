@@ -2207,6 +2207,659 @@ export function cn(...inputs) {
   return twMerge(clsx(inputs))
 }` },
   },
+  pagination: {
+    name: 'pagination',
+    deps: [
+      '@radix-ui/react-slot',
+      'class-variance-authority',
+      'lucide-react',
+      'clsx',
+      'tailwind-merge',
+    ],
+    files: [
+      {
+        path: 'components/ui/pagination/pagination.jsx',
+        content: `/* eslint-disable react-refresh/only-export-components */
+import { forwardRef, useState, useCallback } from 'react'
+import { Slot } from '@radix-ui/react-slot'
+import { cva } from 'class-variance-authority'
+import {
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+  MoreHorizontal,
+} from 'lucide-react'
+import { cn } from '../../../lib/utils.js'
+
+function range(start, end) {
+  const length = end - start + 1
+  return Array.from({ length }, (_, i) => start + i)
+}
+
+function paginate({ totalPages, page, siblingCount = 1, boundaryCount = 1 }) {
+  const totalNumbers = siblingCount * 2 + boundaryCount * 2 + 1
+  if (totalPages <= totalNumbers + 1) {
+    return range(1, totalPages)
+  }
+
+  const leftSibling = Math.max(page - siblingCount, boundaryCount + 1)
+  const rightSibling = Math.min(page + siblingCount, totalPages - boundaryCount)
+
+  const showStartEllipsis = leftSibling > boundaryCount + 1
+  const showEndEllipsis = rightSibling < totalPages - boundaryCount
+
+  if (!showStartEllipsis && showEndEllipsis) {
+    const leftCount = boundaryCount + siblingCount * 2
+    return [...range(1, leftCount), 'end-ellipsis', totalPages]
+  }
+
+  if (showStartEllipsis && !showEndEllipsis) {
+    const rightCount = boundaryCount + siblingCount * 2
+    return [1, 'start-ellipsis', ...range(totalPages - rightCount + 1, totalPages)]
+  }
+
+  return [1, 'start-ellipsis', ...range(leftSibling, rightSibling), 'end-ellipsis', totalPages]
+}
+
+const Pagination = forwardRef(
+  (
+    {
+      page: controlledPage,
+      defaultPage = 1,
+      totalPages,
+      onPageChange,
+      siblingCount = 1,
+      boundaryCount = 1,
+      showFirstLast = false,
+      disabled = false,
+      size = 'md',
+      className,
+      ...props
+    },
+    ref
+  ) => {
+    const isControlled = controlledPage !== undefined
+    const [uncontrolledPage, setUncontrolledPage] = useState(defaultPage)
+    const page = isControlled ? controlledPage : uncontrolledPage
+
+    const setPage = useCallback(
+      (value) => {
+        if (disabled) return
+        const next = Math.min(Math.max(value, 1), totalPages)
+        if (!isControlled) setUncontrolledPage(next)
+        onPageChange?.(next)
+      },
+      [disabled, isControlled, onPageChange, totalPages]
+    )
+
+    const items = paginate({ totalPages, page, siblingCount, boundaryCount })
+
+    return (
+      <nav
+        ref={ref}
+        role="navigation"
+        aria-label="Pagination"
+        className={cn('mx-auto w-full', className)}
+        {...props}
+      >
+        <PaginationContent size={size}>
+          {showFirstLast && (
+            <PaginationItem>
+              <PaginationLink
+                size="icon"
+                disabled={disabled || page <= 1}
+                onClick={() => setPage(1)}
+                aria-label="Go to first page"
+              >
+                <ChevronsLeft className="size-4" />
+              </PaginationLink>
+            </PaginationItem>
+          )}
+
+          <PaginationItem>
+            <PaginationLink
+              size="icon"
+              disabled={disabled || page <= 1}
+              onClick={() => setPage(page - 1)}
+              aria-label="Go to previous page"
+            >
+              <ChevronLeft className="size-4" />
+            </PaginationLink>
+          </PaginationItem>
+
+          {items.map((item, i) =>
+            typeof item === 'number' ? (
+              <PaginationItem key={\`page-\${item}\`}>
+                <PaginationLink
+                  active={item === page}
+                  disabled={disabled}
+                  onClick={() => setPage(item)}
+                  aria-label={\`Go to page \${item}\`}
+                  aria-current={item === page ? 'page' : undefined}
+                >
+                  {item}
+                </PaginationLink>
+              </PaginationItem>
+            ) : (
+              <PaginationItem key={\`\${item}-\${i}\`}>
+                <PaginationEllipsis />
+              </PaginationItem>
+            )
+          )}
+
+          <PaginationItem>
+            <PaginationLink
+              size="icon"
+              disabled={disabled || page >= totalPages}
+              onClick={() => setPage(page + 1)}
+              aria-label="Go to next page"
+            >
+              <ChevronRight className="size-4" />
+            </PaginationLink>
+          </PaginationItem>
+
+          {showFirstLast && (
+            <PaginationItem>
+              <PaginationLink
+                size="icon"
+                disabled={disabled || page >= totalPages}
+                onClick={() => setPage(totalPages)}
+                aria-label="Go to last page"
+              >
+                <ChevronsRight className="size-4" />
+              </PaginationLink>
+            </PaginationItem>
+          )}
+        </PaginationContent>
+      </nav>
+    )
+  }
+)
+Pagination.displayName = 'Pagination'
+
+const PaginationContent = forwardRef(({ className, size = 'md', ...props }, ref) => {
+  return (
+    <ul
+      ref={ref}
+      className={cn(
+        'flex items-center justify-center gap-1.5',
+        size === 'sm' && 'gap-1',
+        size === 'lg' && 'gap-2',
+        className
+      )}
+      {...props}
+    />
+  )
+})
+PaginationContent.displayName = 'PaginationContent'
+
+const PaginationItem = forwardRef(({ className, ...props }, ref) => {
+  return <li ref={ref} className={cn('', className)} {...props} />
+})
+PaginationItem.displayName = 'PaginationItem'
+
+const paginationLinkVariants = cva(
+  'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
+  {
+    variants: {
+      variant: {
+        default: 'bg-primary text-primary-foreground shadow-sm hover:bg-primary/90',
+        outline: 'border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground',
+        ghost: 'hover:bg-accent hover:text-accent-foreground',
+      },
+      size: {
+        sm: 'h-8 min-w-8 px-3 text-xs',
+        md: 'h-9 min-w-9 px-4 text-sm',
+        lg: 'h-10 min-w-10 px-5 text-base',
+        icon: 'size-9',
+      },
+    },
+    defaultVariants: {
+      variant: 'outline',
+      size: 'md',
+    },
+  }
+)
+
+const PaginationLink = forwardRef(
+  ({ className, variant, size = 'md', active = false, asChild = false, disabled, onClick, ...props }, ref) => {
+    const Comp = asChild ? Slot : 'button'
+    return (
+      <Comp
+        ref={ref}
+        aria-disabled={disabled || undefined}
+        disabled={disabled}
+        onClick={(e) => {
+          if (active || disabled) {
+            e.preventDefault()
+            return
+          }
+          onClick?.(e)
+        }}
+        className={cn(
+          paginationLinkVariants({ variant: active ? 'default' : variant, size }),
+          active && 'pointer-events-none',
+          className
+        )}
+        {...props}
+      />
+    )
+  }
+)
+PaginationLink.displayName = 'PaginationLink'
+
+const PaginationEllipsis = forwardRef(({ className, ...props }, ref) => {
+  return (
+    <span
+      ref={ref}
+      aria-hidden="true"
+      className={cn('flex h-9 w-9 items-center justify-center', className)}
+      {...props}
+    >
+      <MoreHorizontal className="size-4 text-muted-foreground" />
+      <span className="sr-only">More pages</span>
+    </span>
+  )
+})
+PaginationEllipsis.displayName = 'PaginationEllipsis'
+
+export {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationEllipsis,
+  paginationLinkVariants,
+  paginate,
+}`,
+      },
+    ],
+    utils: {
+      path: 'lib/utils.js',
+      content: `import { clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
+
+export function cn(...inputs) {
+  return twMerge(clsx(inputs))
+}`,
+    },
+  },
+  table: {
+    name: 'table',
+    requires: ['pagination'],
+    deps: [
+      'lucide-react',
+      'clsx',
+      'tailwind-merge',
+    ],
+    files: [
+      {
+        path: 'components/ui/table/table.jsx',
+        content: `import { forwardRef } from 'react'
+import { cn } from '../../../lib/utils.js'
+
+const Table = forwardRef(({ className, ...props }, ref) => (
+  <div className="relative w-full overflow-auto">
+    <table
+      ref={ref}
+      className={cn('w-full caption-bottom text-sm', className)}
+      {...props}
+    />
+  </div>
+))
+Table.displayName = 'Table'
+
+const TableHeader = forwardRef(({ className, ...props }, ref) => (
+  <thead
+    ref={ref}
+    className={cn('[&_tr]:border-b', className)}
+    {...props}
+  />
+))
+TableHeader.displayName = 'TableHeader'
+
+const TableBody = forwardRef(({ className, ...props }, ref) => (
+  <tbody
+    ref={ref}
+    className={cn('[&_tr:last-child]:border-0', className)}
+    {...props}
+  />
+))
+TableBody.displayName = 'TableBody'
+
+const TableFooter = forwardRef(({ className, ...props }, ref) => (
+  <tfoot
+    ref={ref}
+    className={cn(
+      'border-t bg-muted/50 font-medium [&>tr]:last:border-b-0',
+      className
+    )}
+    {...props}
+  />
+))
+TableFooter.displayName = 'TableFooter'
+
+const TableRow = forwardRef(({ className, ...props }, ref) => (
+  <tr
+    ref={ref}
+    className={cn(
+      'border-b border-border/50 transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted',
+      className
+    )}
+    {...props}
+  />
+))
+TableRow.displayName = 'TableRow'
+
+const TableHead = forwardRef(({ className, ...props }, ref) => (
+  <th
+    ref={ref}
+    className={cn(
+      'h-10 px-4 text-left align-middle font-medium text-muted-foreground whitespace-nowrap',
+      className
+    )}
+    {...props}
+  />
+))
+TableHead.displayName = 'TableHead'
+
+const TableCell = forwardRef(({ className, ...props }, ref) => (
+  <td
+    ref={ref}
+    className={cn('px-4 py-3 align-middle', className)}
+    {...props}
+  />
+))
+TableCell.displayName = 'TableCell'
+
+const TableCaption = forwardRef(({ className, ...props }, ref) => (
+  <caption
+    ref={ref}
+    className={cn('mt-4 text-sm text-muted-foreground', className)}
+    {...props}
+  />
+))
+TableCaption.displayName = 'TableCaption'
+
+export {
+  Table,
+  TableHeader,
+  TableBody,
+  TableFooter,
+  TableRow,
+  TableHead,
+  TableCell,
+  TableCaption,
+}`,
+      },
+      {
+        path: 'components/ui/table/data-table.jsx',
+        content: `import { forwardRef, useState, useMemo, useEffect } from 'react'
+import { ArrowDown, ArrowUp, ArrowUpDown, Search } from 'lucide-react'
+import { cn } from '../../../lib/utils.js'
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from './table.jsx'
+import { Pagination } from '../pagination/pagination.jsx'
+
+const getValue = (row, column) => {
+  if (column.accessor) return column.accessor(row)
+  return row[column.key]
+}
+
+const getAlign = (column) =>
+  cn(
+    column.align === 'center' && 'text-center',
+    column.align === 'right' && 'text-right'
+  )
+
+const DataTable = forwardRef(
+  (
+    {
+      columns,
+      data = [],
+      pageSize = 10,
+      showPageSize = false,
+      pageSizeOptions = [5, 10, 20, 50],
+      searchPlaceholder = 'Search...',
+      emptyMessage = 'No results found.',
+      showActions = false,
+      actions,
+      actionsHeader = 'Actions',
+      className,
+      ...props
+    },
+    ref
+  ) => {
+    const [sort, setSort] = useState(null)
+    const [searches, setSearches] = useState({})
+    const [page, setPage] = useState(1)
+    const [size, setSize] = useState(pageSize)
+
+    const handleSort = (key) => {
+      setSort((prev) => {
+        if (!prev || prev.key !== key) return { key, direction: 'asc' }
+        if (prev.direction === 'asc') return { key, direction: 'desc' }
+        return null
+      })
+      setPage(1)
+    }
+
+    const handleSearch = (key, value) => {
+      setSearches((prev) => ({ ...prev, [key]: value }))
+      setPage(1)
+    }
+
+    const filteredRows = useMemo(() => {
+      let rows = data
+      for (const column of columns) {
+        if (!column.searchable) continue
+        const query = String(searches[column.key] ?? '').trim().toLowerCase()
+        if (!query) continue
+        rows = rows.filter((row) =>
+          String(getValue(row, column) ?? '')
+            .toLowerCase()
+            .includes(query)
+        )
+      }
+      return rows
+    }, [data, columns, searches])
+
+    const sortedRows = useMemo(() => {
+      if (!sort) return filteredRows
+      const column = columns.find((c) => c.key === sort.key)
+      if (!column) return filteredRows
+      const direction = sort.direction === 'asc' ? 1 : -1
+      return [...filteredRows].sort((a, b) => {
+        const aValue = getValue(a, column)
+        const bValue = getValue(b, column)
+        if (column.sortFn) return column.sortFn(aValue, bValue) * direction
+        if (typeof aValue === 'number' && typeof bValue === 'number') {
+          return (aValue - bValue) * direction
+        }
+        return (
+          String(aValue ?? '').localeCompare(String(bValue ?? ''), undefined, {
+            numeric: true,
+          }) * direction
+        )
+      })
+    }, [filteredRows, sort, columns])
+
+    const totalPages = Math.max(1, Math.ceil(sortedRows.length / size))
+
+    useEffect(() => {
+      if (page > totalPages) setPage(totalPages)
+    }, [page, totalPages])
+
+    const visibleRows = useMemo(() => {
+      const start = (page - 1) * size
+      return sortedRows.slice(start, start + size)
+    }, [sortedRows, page, size])
+
+    const startIndex = sortedRows.length === 0 ? 0 : (page - 1) * size + 1
+    const endIndex = Math.min(page * size, sortedRows.length)
+
+    return (
+      <div
+        ref={ref}
+        className={cn('w-full', className)}
+        {...props}
+      >
+        <Table>
+          <TableHeader>
+            <TableRow>
+              {columns.map((column) => (
+                <TableHead
+                  key={column.key}
+                  className={cn(column.width, getAlign(column))}
+                >
+                  <div className={cn('flex flex-col gap-1.5', getAlign(column))}>
+                    <button
+                      type="button"
+                      disabled={!column.sortable}
+                      onClick={() => handleSort(column.key)}
+                      className={cn(
+                        'inline-flex items-center gap-1 font-medium text-muted-foreground',
+                        getAlign(column),
+                        column.sortable
+                          ? 'cursor-pointer select-none hover:text-foreground'
+                          : 'cursor-default'
+                      )}
+                    >
+                      {column.header}
+                      {column.sortable &&
+                        (sort?.key === column.key ? (
+                          sort.direction === 'asc' ? (
+                            <ArrowUp className="size-3.5" />
+                          ) : (
+                            <ArrowDown className="size-3.5" />
+                          )
+                        ) : (
+                          <ArrowUpDown className="size-3.5 opacity-50" />
+                        ))}
+                    </button>
+
+                    {column.searchable && (
+                      <div className="relative">
+                        <Search className="absolute left-2 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
+                        <input
+                          type="text"
+                          value={searches[column.key] ?? ''}
+                          onChange={(e) =>
+                            handleSearch(column.key, e.target.value)
+                          }
+                          placeholder={searchPlaceholder}
+                          aria-label={\`Search \${column.header}\`}
+                          className="h-8 w-full min-w-[120px] rounded-md border border-input bg-background pl-7 pr-2 text-xs shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                        />
+                      </div>
+                    )}
+                  </div>
+                </TableHead>
+              ))}
+
+              {showActions && (
+                <TableHead className="w-[80px] text-right">
+                  <span className="inline-flex items-center justify-end font-medium text-muted-foreground">
+                    {actionsHeader}
+                  </span>
+                </TableHead>
+              )}
+            </TableRow>
+          </TableHeader>
+
+          <TableBody>
+            {visibleRows.length === 0 ? (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length + (showActions ? 1 : 0)}
+                  className="h-24 text-center text-muted-foreground"
+                >
+                  {emptyMessage}
+                </TableCell>
+              </TableRow>
+            ) : (
+              visibleRows.map((row, index) => (
+                <TableRow key={row.id ?? index}>
+                  {columns.map((column) => {
+                    const value = getValue(row, column)
+                    return (
+                      <TableCell
+                        key={column.key}
+                        className={getAlign(column)}
+                      >
+                        {column.render ? column.render(value, row) : value}
+                      </TableCell>
+                    )
+                  })}
+                  {showActions && (
+                    <TableCell className="whitespace-nowrap text-right">
+                      {actions ? actions(row) : null}
+                    </TableCell>
+                  )}
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+
+        <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="whitespace-nowrap text-sm text-muted-foreground">
+            Showing {startIndex}–{endIndex} of {sortedRows.length}
+          </p>
+          <div className="flex flex-col items-center gap-3 sm:flex-row sm:items-center">
+            {showPageSize && (
+              <label className="flex items-center gap-2 whitespace-nowrap text-sm text-muted-foreground">
+                Rows per page
+                <select
+                  value={size}
+                  onChange={(e) => {
+                    setSize(Number(e.target.value))
+                    setPage(1)
+                  }}
+                  className="h-8 rounded-md border border-input bg-background px-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                >
+                  {pageSizeOptions.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            )}
+            <Pagination
+              page={page}
+              totalPages={totalPages}
+              onPageChange={setPage}
+              className="sm:mx-0"
+            />
+          </div>
+        </div>
+      </div>
+    )
+  }
+)
+DataTable.displayName = 'DataTable'
+
+export { DataTable }`,
+      },
+    ],
+    utils: {
+      path: 'lib/utils.js',
+      content: `import { clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
+
+export function cn(...inputs) {
+  return twMerge(clsx(inputs))
+}`,
+    },
+  },
 }
 
 const signinFormContent = `import { Button } from '../ui/button'

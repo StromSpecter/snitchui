@@ -65,6 +65,8 @@ npx snitchui@latest add-template signup
 | `Accordion` | Collapsible panels with single/multiple mode |
 | `Avatar` | User avatar with image fallback and delay |
 | `Alert` | Contextual message with icon support and variants |
+| `Pagination` | Page navigation with controlled/uncontrolled state, sizes, and ellipsis |
+| `Table` | Responsive table with per-column sorting and search, plus pagination |
 
 ## Templates
 

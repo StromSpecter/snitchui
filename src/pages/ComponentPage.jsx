@@ -24,6 +24,8 @@ import { PopoverPage } from './PopoverPage.jsx'
 import { ToastPage } from './ToastPage.jsx'
 import { SheetPage } from './SheetPage.jsx'
 import { CommandPage } from './CommandPage.jsx'
+import { PaginationPage } from './PaginationPage.jsx'
+import { TablePage } from './TablePage.jsx'
 
 
 const pageMap = {
@@ -51,6 +53,8 @@ const pageMap = {
   toast: ToastPage,
   sheet: SheetPage,
   command: CommandPage,
+  pagination: PaginationPage,
+  table: TablePage,
 }
 
 export function ComponentPage() {

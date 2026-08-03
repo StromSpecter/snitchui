@@ -117,6 +117,17 @@ export async function add(name, options = {}) {
     }
   }
 
+  // Auto-install required sibling components
+  if (comp.requires && comp.requires.length > 0) {
+    for (const req of comp.requires) {
+      const reqPath = path.join(srcDir, 'components', 'ui', req, `${req}.jsx`)
+      if (!fileExists(reqPath)) {
+        log(`  ${YELLOW}Installing required component: ${req}${RESET}`)
+        await add(req, { ...options, cwd: projectRoot })
+      }
+    }
+  }
+
   // Write index.js barrel file for IDE auto-import
   const indexDest = path.join(srcDir, `components/ui/${name}/index.js`)
   const indexRelative = path.relative(projectRoot, indexDest)
@@ -141,11 +152,19 @@ export async function add(name, options = {}) {
   if (name === 'toast') exportNames.splice(0, 1, 'Toaster')
   if (name === 'sheet') exportNames.push('SheetTrigger', 'SheetClose', 'SheetContent', 'SheetHeader', 'SheetFooter', 'SheetTitle', 'SheetDescription')
   if (name === 'command') exportNames.push('CommandInput', 'CommandList', 'CommandEmpty', 'CommandGroup', 'CommandItem', 'CommandShortcut', 'CommandSeparator')
+  if (name === 'pagination') exportNames.push('PaginationContent', 'PaginationItem', 'PaginationLink', 'PaginationEllipsis', 'paginationLinkVariants', 'paginate')
+  if (name === 'table') exportNames.splice(0, 1, 'Table', 'TableHeader', 'TableBody', 'TableFooter', 'TableRow', 'TableHead', 'TableCell', 'TableCaption', 'DataTable')
 
 
   if (!fileExists(indexDest) || options.force) {
-    const exportList = exportNames.join(', ')
-    const indexContent = `export { ${exportList} } from './${name}.jsx'\n`
+    let indexContent
+    if (name === 'table') {
+      indexContent =
+        `export {\n  Table,\n  TableHeader,\n  TableBody,\n  TableFooter,\n  TableRow,\n  TableHead,\n  TableCell,\n  TableCaption,\n} from './table.jsx'\nexport { DataTable } from './data-table.jsx'\n`
+    } else {
+      const exportList = exportNames.join(', ')
+      indexContent = `export { ${exportList} } from './${name}.jsx'\n`
+    }
     writeFile(indexDest, indexContent)
     log(`  ${GREEN}✓ Created ${indexRelative}${RESET}`)
   }
