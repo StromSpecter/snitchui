@@ -1,12 +1,11 @@
 import { Copy, Check, Download } from 'lucide-react'
 import { useClipboard, downloadSource } from '../../lib/copy.js'
 import { langFromFilename } from '../../lib/highlight.js'
-import { useHighlightedCode } from '../../lib/useHighlightedCode.js'
+import { HighlightedCode } from './HighlightedCode.jsx'
 
-export function CodeBlock({ code, filename, language, highlight = false }) {
+export function CodeBlock({ code, filename, language }) {
   const { copiedKey, copy } = useClipboard()
   const lang = language || langFromFilename(filename)
-  const html = useHighlightedCode(code, lang, highlight)
 
   return (
     <div className="rounded-lg border border-border/50 bg-card/70 backdrop-blur-xl overflow-hidden">
@@ -33,13 +32,7 @@ export function CodeBlock({ code, filename, language, highlight = false }) {
           </div>
         </div>
       )}
-      <pre className="p-4 text-sm overflow-x-auto bg-[#09090b] text-[#fafafa]">
-        {html ? (
-          <code dangerouslySetInnerHTML={{ __html: html }} />
-        ) : (
-          <code>{code}</code>
-        )}
-      </pre>
+      <HighlightedCode code={code} language={lang} className="bg-[#09090b] text-[#fafafa]" />
     </div>
   )
 }

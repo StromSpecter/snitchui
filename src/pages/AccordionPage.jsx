@@ -39,7 +39,6 @@ export function AccordionPage() {
       <section className="mb-12">
         <h2 className="mb-4 text-xl font-semibold tracking-tight">Usage</h2>
         <CodeBlock
-          highlight
           code={`import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion'
 
 export function Example() {
@@ -89,7 +88,7 @@ export function Example() {
         <h2 className="mb-4 text-xl font-semibold tracking-tight">Source</h2>
         {deps.map((dep) => (
           <div key={dep.file} className="mb-4">
-            <CodeBlock code={dep.source} filename={dep.file} highlight />
+            <CodeBlock code={dep.source} filename={dep.file} />
           </div>
         ))}
       </section>
