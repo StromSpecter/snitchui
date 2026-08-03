@@ -1,5 +1,6 @@
 import { CardDemo } from '../components/ui/card/card.demo.jsx'
 import { CodeBlock } from '../components/ui/CodeBlock.jsx'
+import { HighlightedCode } from '../components/ui/HighlightedCode.jsx'
 import { CopyButton } from '../components/ui/CopyButton.jsx'
 import { components, resolveDeps } from '../constants/components.js'
 
@@ -31,9 +32,7 @@ export function CardPage() {
             <span className="text-sm font-medium">CLI</span>
             <CopyButton text={meta.installCmd} label="install-card" />
           </div>
-          <pre className="p-4 text-sm overflow-x-auto">
-            <code>{meta.installCmd}</code>
-          </pre>
+          <HighlightedCode code={meta.installCmd} language="bash" />
         </div>
       </section>
 

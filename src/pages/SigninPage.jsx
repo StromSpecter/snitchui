@@ -1,4 +1,5 @@
 import { CodeBlock } from '../components/ui/CodeBlock.jsx'
+import { HighlightedCode } from '../components/ui/HighlightedCode.jsx'
 import { CopyButton } from '../components/ui/CopyButton.jsx'
 
 const INSTALL_CMD = 'npx snitchui@latest add-template signin'
@@ -67,9 +68,7 @@ export function SigninPage() {
             <span className="text-sm font-medium">CLI</span>
             <CopyButton text={INSTALL_CMD} label="install-signin" />
           </div>
-          <pre className="p-4 text-sm overflow-x-auto">
-            <code>{INSTALL_CMD}</code>
-          </pre>
+          <HighlightedCode code={INSTALL_CMD} language="bash" />
         </div>
       </section>
 
