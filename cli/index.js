@@ -161,6 +161,15 @@ export async function add(name, options = {}) {
     if (name === 'table') {
       indexContent =
         `export {\n  Table,\n  TableHeader,\n  TableBody,\n  TableFooter,\n  TableRow,\n  TableHead,\n  TableCell,\n  TableCaption,\n} from './table.jsx'\nexport { DataTable } from './data-table.jsx'\n`
+    } else if (name === 'chart') {
+      indexContent =
+        `export { ChartContainer, ChartLegend } from './chart.jsx'\n` +
+        `export { BarChart } from './bar-chart.jsx'\n` +
+        `export { LineChart, AreaChart } from './line-chart.jsx'\n` +
+        `export { PieChart } from './pie-chart.jsx'\n` +
+        `export { RadarChart } from './radar-chart.jsx'\n` +
+        `export { RadialChart } from './radial-chart.jsx'\n` +
+        `export { ScatterChart } from './scatter-chart.jsx'\n`
     } else {
       const exportList = exportNames.join(', ')
       indexContent = `export { ${exportList} } from './${name}.jsx'\n`
@@ -169,8 +178,73 @@ export async function add(name, options = {}) {
     log(`  ${GREEN}✓ Created ${indexRelative}${RESET}`)
   }
 
+  // Append chart color tokens to index.css
+  if (name === 'chart') {
+    const cssPath = path.join(projectRoot, 'src', 'index.css')
+    if (fileExists(cssPath)) {
+      const css = fs.readFileSync(cssPath, 'utf8')
+      if (!css.includes('--color-chart-1')) {
+        const tokens = `
+/* snitchui:chart color tokens */
+@theme {
+  --color-chart-1: #2563eb;
+  --color-chart-2: #16a34a;
+  --color-chart-3: #d97706;
+  --color-chart-4: #db2777;
+  --color-chart-5: #7c3aed;
+}
+
+.dark {
+  --color-chart-1: #60a5fa;
+  --color-chart-2: #4ade80;
+  --color-chart-3: #fbbf24;
+  --color-chart-4: #f472b6;
+  --color-chart-5: #a78bfa;
+}
+
+/* snitchui:chart animations */
+@keyframes chart-tooltip-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes chart-bar-grow {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+
+@keyframes chart-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+.chart-tooltip {
+  animation: chart-tooltip-in 0.15s ease-out;
+}
+
+.chart-bar {
+  transform-box: fill-box;
+  transform-origin: bottom;
+  animation: chart-bar-grow 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.chart-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: chart-draw 0.9s ease-out forwards;
+}
+`
+        fs.appendFileSync(cssPath, tokens)
+        log(`  ${GREEN}✓ Added chart tokens to src/index.css${RESET}`)
+      }
+    }
+  }
+
   log(`\n${GREEN}Done! Import it:${RESET}`)
-  log(`  import { ${namedExport} } from './components/ui/${name}'`)
+  log(
+    name === 'chart'
+      ? `  import { ChartContainer, BarChart } from './components/ui/chart'`
+      : `  import { ${namedExport} } from './components/ui/${name}'`
+  )
 }
 
 export async function addTemplate(name, options = {}) {

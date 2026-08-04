@@ -26,6 +26,7 @@ import { SheetPage } from './SheetPage.jsx'
 import { CommandPage } from './CommandPage.jsx'
 import { PaginationPage } from './PaginationPage.jsx'
 import { TablePage } from './TablePage.jsx'
+import { ChartPage } from './ChartPage.jsx'
 
 
 const pageMap = {
@@ -55,6 +56,7 @@ const pageMap = {
   command: CommandPage,
   pagination: PaginationPage,
   table: TablePage,
+  chart: ChartPage,
 }
 
 export function ComponentPage() {
