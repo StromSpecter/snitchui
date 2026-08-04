@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeAll } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { ChartContainer, BarChart, LineChart, AreaChart, PieChart, RadarChart, RadialChart, ScatterChart } from '../chart/index.js'
+import { describeArc } from '../chart/chart.jsx'
 
 class ResizeObserverMock {
   observe() {}
@@ -98,5 +99,23 @@ describe('charts', () => {
       </ChartContainer>
     )
     expect(document.querySelectorAll('circle').length).toBeGreaterThan(0)
+  })
+})
+
+describe('describeArc', () => {
+  it('sweeps clockwise from startAngle to endAngle on the given center', () => {
+    const d = describeArc(180, 100, 91, 0, 259.2)
+    expect(d).toContain('M 180 9')
+    expect(d).toMatch(/A 91 91 0 1 1/)
+  })
+
+  it('does not flag a sub-180 sweep as a large arc', () => {
+    const d = describeArc(100, 100, 50, 0, 90)
+    expect(d).toContain('A 50 50 0 0 1')
+  })
+
+  it('handles a wrap-around span larger than 180 degrees', () => {
+    const d = describeArc(100, 100, 50, 300, 130)
+    expect(d).toContain('A 50 50 0 1 1')
   })
 })

@@ -2883,9 +2883,10 @@ export function polarToCartesian(cx, cy, r, angleDeg) {
 }
 
 export function describeArc(cx, cy, r, startAngle, endAngle) {
-  const start = polarToCartesian(cx, cy, r, endAngle)
-  const end = polarToCartesian(cx, cy, r, startAngle)
-  const largeArc = endAngle - startAngle > 180 ? 1 : 0
+  const start = polarToCartesian(cx, cy, r, startAngle)
+  const end = polarToCartesian(cx, cy, r, endAngle)
+  const sweep = ((endAngle - startAngle) % 360) + 360
+  const largeArc = sweep % 360 > 180 ? 1 : 0
   return \`M \${start.x} \${start.y} A \${r} \${r} 0 \${largeArc} 1 \${end.x} \${end.y}\`
 }
 
