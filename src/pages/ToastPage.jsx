@@ -1,6 +1,7 @@
 import { Toaster } from '../components/ui/toast/toaster.jsx'
 import { ToastDemo } from '../components/ui/toast/toast.demo.jsx'
 import { CodeBlock } from '../components/ui/CodeBlock.jsx'
+import { HighlightedCode } from '../components/ui/HighlightedCode.jsx'
 import { CopyButton } from '../components/ui/CopyButton.jsx'
 import { components, resolveDeps } from '../constants/components.js'
 
@@ -31,9 +32,7 @@ export function ToastPage() {
             <span className="text-sm font-medium">CLI</span>
             <CopyButton text={meta.installCmd} label="install-toast" />
           </div>
-          <pre className="p-4 text-sm overflow-x-auto">
-            <code>{meta.installCmd}</code>
-          </pre>
+          <HighlightedCode code={meta.installCmd} language="bash" />
         </div>
       </section>
       <section className="mb-12">
