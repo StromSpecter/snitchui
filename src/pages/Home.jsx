@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { components } from '../constants/components.js'
 import { ArrowRight, Copy, Palette, Zap, Package, Shield, Layers, Terminal } from 'lucide-react'
+import { HighlightedCode } from '../components/ui/HighlightedCode.jsx'
 
 const stats = [
   { label: 'Components', value: components.filter((c) => !c.comingSoon).length, suffix: '+ Ready' },
@@ -164,23 +165,19 @@ function HowItWorks() {
       </div>
 
       <div className="mt-10 space-y-3">
-        <div className="rounded-xl border border-border/50 bg-gradient-to-r from-muted/30 to-muted/10 backdrop-blur-xl px-6 py-4">
+        <div className="rounded-xl border border-border/50 bg-[#09090b] backdrop-blur-xl px-6 py-4">
           <div className="flex items-center gap-3 text-sm">
             <Terminal className="size-4 text-muted-foreground shrink-0" />
-            <code className="text-foreground font-mono text-xs sm:text-sm">
-              npm install snitchui
-            </code>
+            <HighlightedCode code="npm install snitchui" language="bash" />
             <span className="hidden sm:inline text-muted-foreground ml-auto">
               Install the library
             </span>
           </div>
         </div>
-        <div className="rounded-xl border border-border/50 bg-gradient-to-r from-muted/30 to-muted/10 backdrop-blur-xl px-6 py-4">
+        <div className="rounded-xl border border-border/50 bg-[#09090b] backdrop-blur-xl px-6 py-4">
           <div className="flex items-center gap-3 text-sm">
             <Terminal className="size-4 text-muted-foreground shrink-0" />
-            <code className="text-foreground font-mono text-xs sm:text-sm">
-              npx snitchui@latest add button input select
-            </code>
+            <HighlightedCode code="npx snitchui@latest add button input select" language="bash" />
             <span className="hidden sm:inline text-muted-foreground ml-auto">
               Add components via CLI
             </span>

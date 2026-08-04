@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { highlightCode } from '../../lib/highlight.js'
 
-export function HighlightedCode({ code, language = 'plaintext', className = '' }) {
+export function HighlightedCode({ code, language = 'plaintext', className = 'bg-[#09090b] text-[#fafafa]' }) {
   const [html, setHtml] = useState(null)
 
   useEffect(() => {
