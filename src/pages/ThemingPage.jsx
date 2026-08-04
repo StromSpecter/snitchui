@@ -98,8 +98,8 @@ export function ThemingPage() {
       <section className="mb-12">
         <h2 className="mb-4 text-xl font-semibold tracking-tight">Radius Tokens</h2>
         <p className="text-sm text-muted-foreground mb-4">Control corner rounding across all components:</p>
-        <div className="rounded-xl border border-border/50 bg-card/70 backdrop-blur-xl p-4">
-          <table className="w-full text-sm">
+        <div className="rounded-xl border border-border/50 bg-card/70 backdrop-blur-xl p-4 overflow-x-auto">
+          <table className="w-full min-w-[640px] text-sm">
             <thead>
               <tr className="border-b border-border/50">
                 <th className="px-3 py-2 text-left font-medium text-muted-foreground">Token</th>

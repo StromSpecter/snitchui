@@ -56,8 +56,8 @@ export function Example() {
       </section>
       <section className="mb-12">
         <h2 className="mb-4 text-xl font-semibold tracking-tight">Props</h2>
-        <div className="rounded-lg border border-border/50 bg-card/70 backdrop-blur-xl overflow-hidden">
-          <table className="w-full text-sm">
+        <div className="rounded-lg border border-border/50 bg-card/70 backdrop-blur-xl overflow-x-auto">
+          <table className="w-full min-w-[640px] text-sm">
             <thead>
               <tr className="border-b border-border/50 bg-muted/50 backdrop-blur-sm">
                 <th className="px-4 py-3 text-left font-medium">Prop</th>
