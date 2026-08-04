@@ -2860,6 +2860,7 @@ export function cn(...inputs) {
 }`,
     },
   },
+// BEGIN CHART_CLI
   chart: {
     name: 'chart',
     requires: [],
@@ -3935,8 +3936,7 @@ export function RadialChart({
       ref={ref}
       onPointerMove={onMove}
       onPointerLeave={ctx.hideTooltip}
-      className={cn('relative mx-auto w-full text-foreground', className)}
-      style={{ width, height }}
+      className={cn('relative w-full text-foreground', className)}
       {...props}
     >
       <svg width={width} height={height} className="block">
@@ -4113,6 +4113,8 @@ export function clamp(value, min, max) {
       },
     ],
   },
+
+// END CHART_CLI
 
 }
 

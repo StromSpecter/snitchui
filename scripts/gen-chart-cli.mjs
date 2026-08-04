@@ -2,6 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 const base = path.join(process.cwd(), 'src', 'components', 'ui', 'chart')
+const target = path.join(process.cwd(), 'cli', 'templates.js')
 const files = [
   'chart.jsx',
   'bar-chart.jsx',
@@ -35,6 +36,23 @@ for (const f of files) {
 }
 lines.push('    ],')
 lines.push('  },')
+const block = lines.join('\n') + '\n'
 
-fs.writeFileSync(path.join(process.cwd(), 'scripts', 'chart-cli.generated.js'), lines.join('\n') + '\n', 'utf8')
-console.log('generated chart-cli.generated.js')
+const content = fs.readFileSync(target, 'utf8')
+const start = '// BEGIN CHART_CLI'
+const end = '// END CHART_CLI'
+const startIdx = content.indexOf(start)
+const endIdx = content.indexOf(end)
+if (startIdx === -1 || endIdx === -1) {
+  console.error(`markers not found in ${target}`)
+  process.exit(1)
+}
+const patched =
+  content.slice(0, startIdx) +
+  start +
+  '\n' +
+  block +
+  '\n' +
+  content.slice(endIdx)
+fs.writeFileSync(target, patched, 'utf8')
+console.log(`synced chart CLI registry into ${target}`)

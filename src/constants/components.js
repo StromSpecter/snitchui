@@ -2839,6 +2839,7 @@ export const components = [
     ],
   },
 ]
+// BEGIN CHART_SOURCES
 export const CHART_SOURCE = `/* eslint-disable react-refresh/only-export-components */
 import {
   createContext,
@@ -3897,8 +3898,7 @@ export function RadialChart({
       ref={ref}
       onPointerMove={onMove}
       onPointerLeave={ctx.hideTooltip}
-      className={cn('relative mx-auto w-full text-foreground', className)}
-      style={{ width, height }}
+      className={cn('relative w-full text-foreground', className)}
       {...props}
     >
       <svg width={width} height={height} className="block">
@@ -4068,6 +4068,8 @@ export function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value))
 }
 `
+
+// END CHART_SOURCES
 
 
 const sourceMap = { BUTTON_SOURCE, LABEL_SOURCE, INPUT_SOURCE, SELECT_SOURCE, UTILS_SOURCE, CHECKBOX_SOURCE, COMBOBOX_SOURCE, DATEPICKER_SOURCE, RADIOBUTTON_SOURCE, SWITCH_SOURCE, TEXTAREA_SOURCE, TIMEPICKER_SOURCE, CARD_SOURCE, BADGE_SOURCE, DIALOG_SOURCE, DROPDOWN_SOURCE, TABS_SOURCE, ACCORDION_SOURCE, AVATAR_SOURCE, ALERT_SOURCE, TOOLTIP_SOURCE, POPOVER_SOURCE, TOAST_SOURCE, SHEET_SOURCE, COMMAND_SOURCE, PAGINATION_SOURCE, TABLE_SOURCE, DATA_TABLE_SOURCE, CHART_SOURCE, BAR_CHART_SOURCE, LINE_CHART_SOURCE, PIE_CHART_SOURCE, RADAR_CHART_SOURCE, RADIAL_CHART_SOURCE, SCATTER_CHART_SOURCE, CHART_HELPERS_SOURCE }

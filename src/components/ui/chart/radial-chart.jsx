@@ -53,8 +53,7 @@ export function RadialChart({
       ref={ref}
       onPointerMove={onMove}
       onPointerLeave={ctx.hideTooltip}
-      className={cn('relative mx-auto w-full text-foreground', className)}
-      style={{ width, height }}
+      className={cn('relative w-full text-foreground', className)}
       {...props}
     >
       <svg width={width} height={height} className="block">
