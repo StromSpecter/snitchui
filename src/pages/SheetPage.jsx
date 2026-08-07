@@ -3,6 +3,7 @@ import { CodeBlock } from '../components/ui/CodeBlock.jsx'
 import { HighlightedCode } from '../components/ui/HighlightedCode.jsx'
 import { CopyButton } from '../components/ui/CopyButton.jsx'
 import { components, resolveDeps } from '../constants/components.js'
+import { SourceSection } from '../components/ui/SourceSection.jsx'
 
 export function SheetPage() {
   const meta = components.find((c) => c.id === 'sheet')
@@ -78,15 +79,8 @@ export function Example() {
             </tbody>
           </table>
         </div>
-      </section>
-      <section className="mb-12">
-        <h2 className="mb-4 text-xl font-semibold tracking-tight">Source</h2>
-        {deps.map((dep) => (
-          <div key={dep.file} className="mb-4">
-            <CodeBlock code={dep.source} filename={dep.file} />
-          </div>
-        ))}
-      </section>
+      </section>      {/* Source */}
+      <SourceSection deps={deps} />
     </div>
   )
 }

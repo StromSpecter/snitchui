@@ -4,6 +4,13 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { execSync } from 'node:child_process'
 import { getComponent, getTemplate, components, templates } from './templates.js'
+import {
+  resolveLang,
+  componentExt,
+  indexExt,
+  toUtilsSource,
+  toFiles,
+} from './tsx.js'
 
 const RESET = '\x1b[0m'
 const CYAN = '\x1b[36m'
@@ -78,6 +85,10 @@ export async function add(name, options = {}) {
 
   const projectRoot = options.cwd || findProjectRoot()
   const srcDir = path.join(projectRoot, 'src')
+  const lang = resolveLang(projectRoot, options)
+  const jsxExt = componentExt(lang)
+  const jsExt = indexExt(lang)
+  const rel = lang === 'ts' ? '' : '.jsx'
 
   if (!fs.existsSync(srcDir)) {
     log(`\n${RED}No src/ directory found in ${projectRoot}${RESET}`)
@@ -85,7 +96,7 @@ export async function add(name, options = {}) {
     return
   }
 
-  log(`\n${CYAN}▸ Installing ${comp.name} component...${RESET}`)
+  log(`\n${CYAN}▸ Installing ${comp.name} component (${lang === 'ts' ? 'TypeScript' : 'JavaScript'})...${RESET}`)
 
   // Install deps
   if (!options.skipInstall) {
@@ -93,7 +104,7 @@ export async function add(name, options = {}) {
   }
 
   // Write component files
-  for (const file of comp.files) {
+  for (const file of toFiles(comp.files, name, lang)) {
     const dest = path.join(srcDir, file.path)
     const relative = path.relative(projectRoot, dest)
 
@@ -108,11 +119,14 @@ export async function add(name, options = {}) {
 
   // Write utils if needed
   if (comp.utils) {
-    const dest = path.join(srcDir, comp.utils.path)
+    const dest = path.join(
+      srcDir,
+      lang === 'ts' ? comp.utils.path.replace(/\.js$/, '.ts') : comp.utils.path
+    )
     const relative = path.relative(projectRoot, dest)
 
     if (!fileExists(dest) || options.force) {
-      writeFile(dest, comp.utils.content)
+      writeFile(dest, toUtilsSource(comp.utils.content, lang))
       log(`  ${GREEN}✓ Created ${relative}${RESET}`)
     }
   }
@@ -120,7 +134,7 @@ export async function add(name, options = {}) {
   // Auto-install required sibling components
   if (comp.requires && comp.requires.length > 0) {
     for (const req of comp.requires) {
-      const reqPath = path.join(srcDir, 'components', 'ui', req, `${req}.jsx`)
+      const reqPath = path.join(srcDir, 'components', 'ui', req, `${req}.${jsxExt}`)
       if (!fileExists(reqPath)) {
         log(`  ${YELLOW}Installing required component: ${req}${RESET}`)
         await add(req, { ...options, cwd: projectRoot })
@@ -128,8 +142,8 @@ export async function add(name, options = {}) {
     }
   }
 
-  // Write index.js barrel file for IDE auto-import
-  const indexDest = path.join(srcDir, `components/ui/${name}/index.js`)
+  // Write index barrel file for IDE auto-import
+  const indexDest = path.join(srcDir, `components/ui/${name}/index.${jsExt}`)
   const indexRelative = path.relative(projectRoot, indexDest)
   const namedExport = capitalize(name)
 
@@ -160,19 +174,24 @@ export async function add(name, options = {}) {
     let indexContent
     if (name === 'table') {
       indexContent =
-        `export {\n  Table,\n  TableHeader,\n  TableBody,\n  TableFooter,\n  TableRow,\n  TableHead,\n  TableCell,\n  TableCaption,\n} from './table.jsx'\nexport { DataTable } from './data-table.jsx'\n`
+        `export {\n  Table,\n  TableHeader,\n  TableBody,\n  TableFooter,\n  TableRow,\n  TableHead,\n  TableCell,\n  TableCaption,\n} from './table${rel}'\n` +
+        `export { DataTable } from './data-table${rel}'\n`
     } else if (name === 'chart') {
       indexContent =
-        `export { ChartContainer, ChartLegend } from './chart.jsx'\n` +
-        `export { BarChart } from './bar-chart.jsx'\n` +
-        `export { LineChart, AreaChart } from './line-chart.jsx'\n` +
-        `export { PieChart } from './pie-chart.jsx'\n` +
-        `export { RadarChart } from './radar-chart.jsx'\n` +
-        `export { RadialChart } from './radial-chart.jsx'\n` +
-        `export { ScatterChart } from './scatter-chart.jsx'\n`
+        `export { ChartContainer, ChartLegend } from './chart${rel}'\n` +
+        `export { BarChart } from './bar-chart${rel}'\n` +
+        `export { LineChart, AreaChart } from './line-chart${rel}'\n` +
+        `export { PieChart } from './pie-chart${rel}'\n` +
+        `export { RadarChart } from './radar-chart${rel}'\n` +
+        `export { RadialChart } from './radial-chart${rel}'\n` +
+        `export { ScatterChart } from './scatter-chart${rel}'\n`
+    } else if (name === 'datepicker') {
+      indexContent = `export { DatePicker } from './datepicker${rel}'\n`
+    } else if (name === 'toast') {
+      indexContent = `export { Toaster } from './toaster${rel}'\n`
     } else {
       const exportList = exportNames.join(', ')
-      indexContent = `export { ${exportList} } from './${name}.jsx'\n`
+      indexContent = `export { ${exportList} } from './${name}${rel}'\n`
     }
     writeFile(indexDest, indexContent)
     log(`  ${GREEN}✓ Created ${indexRelative}${RESET}`)
@@ -258,6 +277,9 @@ export async function addTemplate(name, options = {}) {
 
   const projectRoot = options.cwd || findProjectRoot()
   const srcDir = path.join(projectRoot, 'src')
+  const lang = resolveLang(projectRoot, options)
+  const jsxExt = componentExt(lang)
+  const jsExt = indexExt(lang)
 
   if (!fs.existsSync(srcDir)) {
     log(`\n${RED}No src/ directory found in ${projectRoot}${RESET}`)
@@ -265,7 +287,7 @@ export async function addTemplate(name, options = {}) {
     return
   }
 
-  log(`\n${CYAN}▸ Installing ${tmpl.name} template...${RESET}`)
+  log(`\n${CYAN}▸ Installing ${tmpl.name} template (${lang === 'ts' ? 'TypeScript' : 'JavaScript'})...${RESET}`)
 
   // Install npm deps
   if (!options.skipInstall) {
@@ -275,7 +297,7 @@ export async function addTemplate(name, options = {}) {
   // Install missing UI component deps
   if (tmpl.uiDeps && tmpl.uiDeps.length > 0) {
     for (const uiComp of tmpl.uiDeps) {
-      const compPath = path.join(srcDir, 'components', 'ui', uiComp, `${uiComp}.jsx`)
+      const compPath = path.join(srcDir, 'components', 'ui', uiComp, `${uiComp}.${jsxExt}`)
       if (!fileExists(compPath)) {
         log(`  ${YELLOW}Installing required component: ${uiComp}${RESET}`)
         await add(uiComp, { ...options, cwd: projectRoot })
@@ -284,7 +306,7 @@ export async function addTemplate(name, options = {}) {
   }
 
   // Write template files
-  for (const file of tmpl.files) {
+  for (const file of toFiles(tmpl.files, name, lang)) {
     const dest = path.join(srcDir, file.path)
     const relative = path.relative(projectRoot, dest)
 
@@ -297,9 +319,9 @@ export async function addTemplate(name, options = {}) {
     log(`  ${GREEN}✓ Created ${relative}${RESET}`)
   }
 
-  // Write barrel index.js for IDE auto-import
+  // Write barrel index for IDE auto-import
   const templateDir = path.join(srcDir, 'components', 'templates')
-  const indexDest = path.join(templateDir, 'index.js')
+  const indexDest = path.join(templateDir, `index.${jsExt}`)
   const exportName = `${capitalize(name)}Form`
   const exportLine = `export { ${exportName} } from './${exportName}'\n`
 
@@ -327,17 +349,19 @@ const args = process.argv.slice(2)
 const command = args[0]
 const force = args.includes('--force')
 const skipInstall = args.includes('--skip-install')
+const typescript = args.includes('--typescript') || args.includes('--ts')
+const javascript = args.includes('--javascript') || args.includes('--js')
 
 const names = args.slice(1).filter((a) => !a.startsWith('--'))
 
 ;(async () => {
   if (command === 'add' && names.length) {
     for (const name of names) {
-      await add(name, { force, skipInstall })
+      await add(name, { force, skipInstall, typescript, javascript })
     }
   } else if (command === 'add-template' && names.length) {
     for (const name of names) {
-      await addTemplate(name, { force, skipInstall })
+      await addTemplate(name, { force, skipInstall, typescript, javascript })
     }
   } else {
     log(`\n${CYAN}snitchui CLI${RESET}`)
@@ -347,9 +371,14 @@ const names = args.slice(1).filter((a) => !a.startsWith('--'))
     log(`\nOptions:`)
     log(`  --force         Overwrite existing files`)
     log(`  --skip-install  Skip npm install`)
+    log(`  --ts | --typescript     Emit TypeScript (.tsx/.ts) files`)
+    log(`  --js | --javascript     Emit JavaScript (.jsx/.js) files`)
+    log(`\nLanguage is auto-detected: a tsconfig.json, a "typescript" dep or`)
+    log(`any .ts/.tsx source switches to TypeScript. Flags override detection.`)
     log(`\nExamples:`)
     log(`  npx snitchui add button input select card`)
     log(`  npx snitchui add button --force`)
+    log(`  npx snitchui add button --ts`)
     log(`  npx snitchui add-template signin`)
     log(`  npx snitchui add-template signup`)
   }

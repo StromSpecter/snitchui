@@ -1,10 +1,13 @@
+import { useState } from 'react'
 import { CodeBlock } from '../components/ui/CodeBlock.jsx'
+import { LanguageToggle } from '../components/ui/LanguageToggle.jsx'
 
 const STEPS = [
   {
     title: 'Create a new React project',
     desc: 'Start with Vite + React. This is the recommended setup.',
     code: 'npm create vite@latest my-app -- --template react\ncd my-app\nnpm install',
+    codeTs: 'npm create vite@latest my-app -- --template react-ts\ncd my-app\nnpm install',
   },
   {
     title: 'Install Tailwind CSS v4',
@@ -15,6 +18,7 @@ const STEPS = [
     title: 'Configure Tailwind',
     desc: 'Add the Tailwind Vite plugin to your Vite config.',
     filename: 'vite.config.js',
+    filenameTs: 'vite.config.ts',
     code: `import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
@@ -65,13 +69,14 @@ export default defineConfig({
   },
   {
     title: 'Scaffold components',
-    desc: 'Run the CLI to automatically install dependencies and create component files. Available: button, label, input, select, checkbox, combobox, datepicker, radiobutton, switch, textarea, timepicker, card, badge, dialog, dropdown, tabs, accordion, avatar, alert.',
+    desc: 'Run the CLI to automatically install dependencies and create component files. It auto-detects TypeScript (adds .tsx/.ts files) — force a language with --ts or --js. Available: button, label, input, select, checkbox, combobox, datepicker, radiobutton, switch, textarea, timepicker, card, badge, dialog, dropdown, tabs, accordion, avatar, alert.',
     code: 'npx snitchui@latest add button input select card',
   },
   {
     title: 'Use the component',
     desc: 'Import and use the Button component in your app.',
     filename: 'src/App.jsx',
+    filenameTs: 'src/App.tsx',
     code: `import { Button } from './components/ui/button'
 
 function App() {
@@ -96,6 +101,9 @@ const REQUIRED = [
 ]
 
 export function Installation() {
+  const [lang, setLang] = useState('js')
+  const isTs = lang === 'ts'
+
   return (
     <div className="mx-auto max-w-4xl px-6 py-10">
       <div className="mb-8">
@@ -137,9 +145,12 @@ export function Installation() {
 
       {/* Steps */}
       <section>
-        <h2 className="mb-6 text-xl font-semibold tracking-tight">
-          Step-by-step Guide
-        </h2>
+        <div className="mb-6 flex items-center justify-between">
+          <h2 className="text-xl font-semibold tracking-tight">
+            Step-by-step Guide
+          </h2>
+          <LanguageToggle value={lang} onChange={setLang} />
+        </div>
         <div className="space-y-8">
           {STEPS.map((step, i) => (
             <div key={i}>
@@ -154,7 +165,10 @@ export function Installation() {
                   </p>
                   {step.code && (
                     <div className="mt-3">
-                      <CodeBlock code={step.code} filename={step.filename} />
+                      <CodeBlock
+                        code={isTs && step.codeTs ? step.codeTs : step.code}
+                        filename={isTs && step.filenameTs ? step.filenameTs : step.filename}
+                      />
                     </div>
                   )}
                 </div>

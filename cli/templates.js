@@ -1315,7 +1315,7 @@ function DropdownTrigger({ asChild, children, ...props }) {
 DropdownTrigger.displayName = 'DropdownTrigger'
 
 const DropdownContent = forwardRef(({ className, align = 'start', sideOffset = 8, children, ...props }, ref) => {
-  const { open } = useContext(DropdownContext)
+  const { open, setOpen } = useContext(DropdownContext)
 
   return open ? (
     <div
